@@ -39,12 +39,18 @@
   resumo.addEventListener("input", () => {
     $("resumo-contador").textContent = resumo.value.length.toLocaleString("pt-BR") + " / 4.000 caracteres";
   });
-  const categoria = $("categoria"), evento = $("evento");
-  categoria.addEventListener("change", () => {
+  const categoria = $("categoria"), evento = $("evento"), eventoOutro = $("eventoOutro");
+  const atualizarEvento = () => {
     const isBanner = categoria.value === "Banner de pesquisa";
+    const outro = evento.value === "__outros__";
     evento.required = isBanner;
-    evento.placeholder = isBanner ? "Informe a feira ou evento (obrigatório)" : "Opcional para TCC";
-  });
+    $("campo-outro-evento").hidden = !outro;
+    eventoOutro.required = outro;
+    if (!outro) eventoOutro.value = "";
+  };
+  categoria.addEventListener("change", atualizarEvento);
+  evento.addEventListener("change", atualizarEvento);
+  atualizarEvento();
 
   const lerBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -85,6 +91,17 @@
       if (signature !== "%PDF-") throw new Error("O arquivo selecionado não contém a assinatura de PDF.");
       const base64 = await lerBase64(file);
       const fields = Object.fromEntries(new FormData(form).entries());
+      // Usa somente nomes canônicos, independentemente de caixa ou acentos.
+      const dicionarios = window.CETEP_DICIONARIOS;
+      const cursoPadrao = dicionarios?.normalizarCurso(fields.curso);
+      if (!cursoPadrao) throw new Error("Selecione um curso válido na lista.");
+      fields.curso = cursoPadrao;
+      fields.evento = evento.value === "__outros__"
+        ? String(eventoOutro.value || "").trim() : dicionarios?.normalizarEvento(evento.value) || "";
+      if (evento.value === "__outros__" && fields.evento.length < 3) {
+        throw new Error("Informe o nome do outro evento científico.");
+      }
+      delete fields.eventoOutro;
       delete fields.metadados;
       delete fields.arquivoBase64;
       fields.aceite = $("aceite").checked ? "sim" : "nao";
