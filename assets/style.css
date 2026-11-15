@@ -173,3 +173,13 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
   .catalog-search-button{width:100%}
   .catalog-actions .subtle{font-size:.77rem}
 }
+
+
+/* Banner institucional com cursos técnicos representados visualmente. */
+.hero-art{width:min(56%,880px);opacity:.94;inset:0 0 0 auto;pointer-events:none}
+.hero-art img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.hero-content{position:relative;z-index:1;max-width:610px}
+.hero{background:linear-gradient(110deg,#062653,#0954a0 60%,#117eb7)}
+.submission-assistant__method{font-size:.82rem;font-weight:650;color:#18476d;background:#e8f3fd;border:1px solid #c9e2f6;border-radius:9px;padding:11px 13px;margin:16px 0 8px}
+@media(max-width:980px){.hero-art{width:68%;opacity:.35}.hero-content{max-width:640px}}
+@media(max-width:600px){.hero-art{width:100%;opacity:.15}.hero-content{max-width:100%}}
