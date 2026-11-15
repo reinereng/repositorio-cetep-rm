@@ -86,8 +86,12 @@ function receberSubmissaoWeb_(e) {
   if (!d.curso) throw new Error('Selecione um curso válido na lista institucional.');
   const eventoInformado = String(dados.evento || '').trim().slice(0,160);
   const eventoChave = eventoInformado.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
-  d.evento = ['FECITEC','AFROTEC','SEMATEC'].indexOf(eventoChave) >= 0
-    ? eventoChave : eventoInformado || 'Não se aplica!';
+  const eventosPadrao = {
+    'FECITESC':'FECITESC', 'FECITEC':'FECITESC',
+    'AFROTEP':'AFROTEP', 'AFROTEC':'AFROTEP',
+    'SEMATEP':'SEMATEP', 'SEMATEC':'SEMATEP'
+  };
+  d.evento = eventosPadrao[eventoChave] || eventoInformado || 'Não se aplica!';
   if (d.categoria === 'Banner de pesquisa' && d.evento === 'Não se aplica!') {
     throw new Error('Informe a feira ou evento para banners de pesquisa.');
   }
