@@ -8,5 +8,22 @@
 <a href="consultar.html" aria-current="page">Consultar acervo</a>
 <a href="submeter.html">Submeter trabalho</a>
 <a href="sobre.html">Sobre o repositório</a>
-</nav></div></header><main id="conteudo"><section class="page-heading"><div class="container"><div class="eyebrow" style="color:#1158ac">Acervo institucional</div><h1>Consultar acervo</h1><p class="lead">Pesquise trabalhos por título, assunto, curso, categoria, ano e evento científico. O acesso aos documentos exige uma conta autorizada do e-Nova.</p></div></section><section class="section" style="padding-top:10px"><div class="container"><div class="panel"><h2>Pesquisa de trabalhos</h2><p>O catálogo digital reúne os trabalhos aprovados pela curadoria do CETEP-RM, incluindo TCCs e banners de pesquisa.</p><p><a class="button button--blue" href="#" data-catalog-url target="_blank" rel="noopener noreferrer">Abrir pesquisa institucional</a></p><p class="subtle" data-consulta-status>Entre com sua conta e-Nova para visualizar o catálogo.</p></div><div class="notice"><strong>Privacidade:</strong> os PDFs e metadados institucionais não são copiados para este site público. A consulta abre o ambiente autorizado pela Secretaria da Educação.</div></div></section></main><footer class="footer"><div class="container footer-inner"><span>CETEP-RM · Repositório Pedagógico e Científico</span><span>Documentos disponíveis conforme as permissões do domínio e-Nova.</span></div></footer>
-<script src="assets/config.js"></script><script src="assets/app.js"></script></body></html>
+</nav></div></header><main id="conteudo">
+<section class="page-heading"><div class="container"><div class="eyebrow" style="color:#1158ac">Pesquisa no repositório</div><h1>Consultar acervo</h1><p class="lead">Encontre trabalhos de conclusão de curso, banners científicos e projetos por título, assunto, curso, ano e evento.</p></div></section>
+<section class="section" style="padding-top:12px"><div class="container">
+<section class="panel catalog-panel" aria-labelledby="filtros-titulo">
+<div class="catalog-heading"><div><p class="catalog-eyebrow">CATÁLOGO DE PRODUÇÕES CIENTÍFICAS</p><h2 id="filtros-titulo">Pesquise por trabalhos</h2></div><span class="catalog-total" id="total-publicado" aria-label="Número de trabalhos catalogados">Carregando…</span></div>
+<form id="form-busca" role="search" autocomplete="off">
+<div class="catalog-controls">
+<div class="catalog-field catalog-field--search"><label for="busca">Título, tema ou palavra-chave</label><input type="search" id="busca" name="busca" placeholder="Ex.: giz de cera, biodiesel, meio ambiente" aria-describedby="busca-ajuda"><small id="busca-ajuda">Você pode pesquisar por palavras ou parte do título.</small></div>
+<div class="catalog-field"><label for="categoria">Categoria</label><select id="categoria" name="categoria"><option value="">Todas as categorias</option></select></div>
+<div class="catalog-field"><label for="curso">Curso / Área</label><select id="curso" name="curso"><option value="">Todos os cursos</option></select></div>
+<div class="catalog-field"><label for="ano">Ano</label><select id="ano" name="ano"><option value="">Todos os anos</option></select></div>
+<div class="catalog-field"><label for="evento">Feira ou evento</label><select id="evento" name="evento"><option value="">Todas as feiras</option></select></div>
+</div>
+</form></section>
+<div class="catalog-results-head"><p id="resumo-busca" role="status" aria-live="polite">Carregando trabalhos publicados…</p><button type="button" id="limpar-filtros" class="catalog-clear">Limpar filtros</button></div>
+<section id="resultados" class="catalog-results" aria-label="Resultados da pesquisa" aria-busy="true"></section>
+<div class="catalog-note"><strong>Sobre o acesso:</strong> os títulos e os dados bibliográficos desta consulta são públicos. Os arquivos PDF continuam no Google Drive e podem solicitar uma conta institucional e-Nova para leitura. A planilha de catalogação não é aberta pelo site.</div>
+</div></section></main><footer class="footer"><div class="container footer-inner"><span>CETEP-RM · Repositório Pedagógico e Científico</span><span>Documentos disponíveis conforme as permissões do domínio e-Nova.</span></div></footer>
+<script src="assets/config.js"></script><script src="assets/app.js"></script><script src="assets/busca.js" defer></script></body></html>
