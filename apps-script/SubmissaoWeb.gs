@@ -81,6 +81,12 @@ function receberSubmissaoWeb_(e) {
                    resumo:4000,palavrasChave:400};
   const d = {};
   obrig.forEach(k => { d[k] = campo(k, limites[k]); });
+  // Nome do(a) orientador(a) obrigatório para TCC e banner.
+  // Uma sugestão ausente da leitura do PDF/IA não substitui seu preenchimento.
+  if (d.orientador.length < 5 ||
+      /^(?:n[ãa]o informado|n[ãa]o identificado|sem orientador|a definir|nenhum|desconhecido)$/i.test(d.orientador)) {
+    throw new Error('Informe o nome completo do(a) orientador(a).');
+  }
   d.evento = String(dados.evento || '').trim().slice(0,160) || 'Não se aplica!';
   d.complemento = String(dados.complemento || '').trim().slice(0,1000);
   const categoriaValida = ['Trabalho de Conclusão de Curso (TCC)', 'Banner de pesquisa'];
