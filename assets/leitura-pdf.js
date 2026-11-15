@@ -82,7 +82,16 @@
         throw new Error("Não consegui extrair texto suficiente. O arquivo pode estar digitalizado como imagem; preencha manualmente.");
       }
       return {all, pages:texts, count: pdf.numPages};
-    } finally { await pdf.destroy(); }
+    } finally {
+      // O PDF.js expõe destroy() na tarefa de carregamento; algumas builds
+      // não o expõem no proxy do documento. Falha no cleanup não invalida a leitura.
+      try {
+        if (typeof task.destroy === "function") await task.destroy();
+        else if (typeof pdf.cleanup === "function") await pdf.cleanup();
+      } catch (cleanupError) {
+        console.warn("CETEP-RM: limpeza do PDF:", cleanupError);
+      }
+    }
   }
 
   function findLabel(lines, regex) {
