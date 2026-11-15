@@ -141,3 +141,6 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
 .submission-suggestion strong{font-size:.84rem;color:#1d405e}
 .submission-suggestion small{font-size:.82rem;color:#61738a;overflow-wrap:anywhere;line-height:1.5;max-height:95px;overflow:hidden}
 @media(max-width:720px){.submission-assistant{padding:23px 18px;border-radius:13px}.submission-suggestions__list{grid-template-columns:1fr}.submission-assistant__actions button{width:100%}}
+
+/* O atributo hidden precisa prevalecer sobre regras visuais de botões e labels. */
+[hidden]{display:none!important}
