@@ -31,11 +31,11 @@ Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferi
   <div class="submission-upload"><label for="arquivoPdf">Selecionar PDF do trabalho <span aria-hidden="true">*</span></label><input id="arquivoPdf" type="file" accept=".pdf,application/pdf" required aria-describedby="ajuda-pdf"><p id="ajuda-pdf" class="subtle">O arquivo será encaminhado diretamente ao Google Drive institucional para triagem. Não será armazenado no GitHub.</p><p id="arquivo-info" class="submission-file-info" aria-live="polite">Nenhum arquivo selecionado.</p></div>
   <div class="submission-assistant__actions">
     <button type="button" class="button button--blue" id="identificar-pdf">Identificar informações do PDF</button>
-    <button type="button" class="button submission-assistant__ai" id="analisar-com-ia" disabled>Aprimorar com IA</button>
+    <button type="button" class="button submission-assistant__ai" id="analisar-com-ia" disabled>Aprimorar com GPT</button>
   </div>
   <label class="submission-consent submission-consent--ia" id="consentimento-ia-box" hidden>
     <input type="checkbox" id="consentimento-ia">
-    <span><strong>Autorização para análise com IA:</strong> concordo que trechos do texto do PDF sejam enviados ao serviço de inteligência artificial configurado pelo CETEP-RM exclusivamente para sugerir os campos do formulário. Nenhum trabalho será publicado por essa análise.</span>
+    <span><strong>Autorização para análise com GPT:</strong> concordo que trechos do texto do PDF sejam enviados ao serviço de IA da OpenAI configurado pelo CETEP-RM exclusivamente para sugerir os campos do formulário. Nenhum trabalho será publicado por essa análise.</span>
   </label>
   <p id="ia-explicacao" class="subtle">A identificação inicial funciona no próprio navegador. A análise por modelo de IA requer configuração adicional e autorização para o processamento do texto.</p>
   <p id="extracao-status" class="submission-assistant__status" role="status" aria-live="polite">Nenhuma leitura iniciada.</p>
