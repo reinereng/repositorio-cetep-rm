@@ -104,12 +104,15 @@ function sincronizarCatalogoGitHub() {
         id:id, titulo:titulo, categoria:categoria,
         evento:normalizarEvento(r[3]), curso:cursoCatalogoPadronizado_(r[4]),
         ano:String(r[5]||'').trim(),
+        // Resumo de trabalho já aprovado e publicado: será pesquisável no site.
+        // Não incluir documentos internos ou registros ainda em triagem.
+        resumo:String(r[6]||'').replace(/\s+/g,' ').trim().slice(0,4000),
         palavrasChave:String(r[7]||'').trim(), pdf:link
       };
     }
     const registros = Object.keys(mapa).sort().map(id=>mapa[id]);
     // A página do GitHub é pública: incluímos APENAS obras catalogadas em
-    // ACERVO_INSTITUCIONAL, com campos bibliográficos, sem nomes, emails ou resumo.
+    // ACERVO_INSTITUCIONAL, com título, resumo acadêmico, palavras-chave e demais campos bibliográficos, sem e-mails, nomes de responsáveis pela submissão ou dados de triagem.
     const base = 'https://api.github.com/repos/' + GITHUB_ACERVO.owner
       + '/' + GITHUB_ACERVO.repo + '/contents/' + GITHUB_ACERVO.caminho;
     const headers = {
