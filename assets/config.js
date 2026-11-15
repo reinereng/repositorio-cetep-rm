@@ -3,5 +3,9 @@ window.CETEP_CONFIG = Object.freeze({
   formulario: "https://forms.gle/a8Pf7tfMcteJvhjP8",
   catalogoInstitucional: "https://docs.google.com/spreadsheets/d/1TmexSbzLLjBNoNf6X6lc3iTYRoLDY98NqfHia3GV8v0/edit",
   // Opcional: cole aqui o endereço /exec do Apps Script de consulta autenticada.
-  consultaWebExec: ""
+  consultaWebExec: "",
+  // Preencha SOMENTE após implantar e validar o backend Apps Script para contas e-Nova.
+  // Nunca insira credenciais nem tokens neste arquivo público.
+  submissaoWebExec: "",
+  limitePdfMB: 6
 });
