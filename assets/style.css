@@ -183,3 +183,12 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
 .submission-assistant__method{font-size:.82rem;font-weight:650;color:#18476d;background:#e8f3fd;border:1px solid #c9e2f6;border-radius:9px;padding:11px 13px;margin:16px 0 8px}
 @media(max-width:980px){.hero-art{width:68%;opacity:.35}.hero-content{max-width:640px}}
 @media(max-width:600px){.hero-art{width:100%;opacity:.15}.hero-content{max-width:100%}}
+
+
+/* Resumos consultáveis sem aumentar a altura dos cartões no celular. */
+.catalog-card__abstract{margin:13px 0 0;padding-top:11px;border-top:1px solid var(--line)}
+.catalog-card__abstract summary{cursor:pointer;color:var(--blue);font-size:.83rem;font-weight:750;list-style-position:inside}
+.catalog-card__abstract summary:hover{text-decoration:underline}
+.catalog-card__abstract p{font-size:.83rem;line-height:1.55;color:var(--muted);margin:10px 0 0;white-space:normal;overflow-wrap:anywhere}
+.catalog-card__abstract[open]{margin-bottom:12px}
+@media(max-width:700px){.catalog-card__abstract p{font-size:.82rem}}
