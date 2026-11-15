@@ -11,7 +11,7 @@
     "Segurança do Trabalho",
     "Sistemas de Energia Renovável"
   ]);
-  const eventos = Object.freeze(["FECITEC", "AFROTEC", "SEMATEC"]);
+  const eventos = Object.freeze(["FECITESC", "AFROTEP", "SEMATEP"]);
   const norm = value => String(value || "").normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "").toLowerCase()
     .replace(/\s+/g, " ").trim();
@@ -33,8 +33,9 @@
   const normalizarEvento = raw => {
     const v = norm(raw);
     if (!v || v === "nao se aplica" || v === "nenhum" || v === "sem evento") return "";
+    const aliases = { "fecitec": "FECITESC", "afrotec": "AFROTEP", "sematec": "SEMATEP" };
     const selected = eventos.find(e => norm(e) === v);
-    return selected || String(raw || "").trim().slice(0,160);
+    return aliases[v] || selected || String(raw || "").trim().slice(0,160);
   };
   window.CETEP_DICIONARIOS = Object.freeze({cursos,eventos,normalizarCurso,normalizarEvento});
 })();
