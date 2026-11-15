@@ -1,65 +1,50 @@
-# CETEP-RM — Leitura de PDF e identificação com OpenAI
+# CETEP-RM — Identificação automática de dados do PDF
 
-## 1. Modalidade sem custos de API: identificação local
+## Funcionamento da interface
 
-No site **Submeter Trabalho**, selecione um PDF de até 6 MB e clique **Identificar informações do PDF**.
+Na página **Submeter trabalho**, o usuário vê apenas o botão **Pesquisar no PDF**.
 
-O site usa PDF.js no próprio navegador, lê até as 5 primeiras páginas de texto extraível e sugere título, autores (quando explicitamente identificados), orientador, co-orientador (quando houver), resumo, palavras-chave, ano, curso, categoria e evento. O professor escolhe as sugestões que deseja aplicar e faz a conferência manual. O campo de **co-orientador(a) é opcional**: caso não haja coorientação explícita, ele permanece em branco. O orientador principal segue o requisito original do formulário.
+1. O navegador lê texto extraível de **até cinco páginas** do PDF, sem enviar o documento para IA.
+2. Se encontrar **cinco ou mais campos**, exibe as sugestões para conferência, sem gastar tokens.
+3. Se encontrar **quatro campos ou menos**, e a integração com OpenAI estiver habilitada, pergunta se o usuário **autoriza enviar trechos do texto para uma análise complementar por IA**. É uma autorização específica, apresentada somente quando necessária. Uma resposta negativa mantém a identificação local.
+4. Quando houver autorização, até **12.000 caracteres** do texto extraído são enviados ao Apps Script, que chama a OpenAI e retorna sugestões para revisão. Nada é publicado ou submetido automaticamente pela análise.
+5. Caso a integração esteja desativada, falhe, ou não haja texto extraível, o professor pode preencher o restante manualmente.
 
-Essa modalidade **não chama nenhum modelo de IA e não consome créditos de API**. Não faz OCR: documentos escaneados como imagem exigem preenchimento manual.
+**Importante:** o sistema não realiza OCR. PDFs digitalizados como imagem podem exigir preenchimento manual. A IA é uma ajuda, não uma validação da exatidão dos dados. Co-orientador é opcional; os demais campos seguem a validação do formulário.
 
-## 2. Modalidade opcional com OpenAI
+## Arquivos do Apps Script a manter atualizados
 
-Foi preparada a integração com a **OpenAI Responses API**, utilizando por padrão o modelo econômico `gpt-6-luna`. O modelo possui saída estruturada em JSON.
+O projeto Apps Script é aquele vinculado à **Planilha Mestre** da conta e-Nova.
 
-**Importante:** a modalidade com GPT só é exibida depois de implantar o código na conta e-Nova, configurar a chave e ativar manualmente `iaMetadadosAtiva` no GitHub. A chave nunca deve ser escrita no frontend público nem compartilhada com o assistente.
+- [SubmissaoWeb.gs](SubmissaoWeb.gs): recebe o PDF, registra a submissão, valida cursos e eventos e armazena co-orientação em `SUBMISSOES!AC`; inclui a rota `acao=analisarIA`.
+- [AnaliseMetadadosIA.gs](AnaliseMetadadosIA.gs): análise complementar com a Responses API da OpenAI, integrada à rota anterior.
+- [SincronizarCatalogoGitHub.gs](SincronizarCatalogoGitHub.gs): sincroniza o catálogo aprovado, padroniza os eventos FECITESC, AFROTEP, SEMATEP e disponibiliza o resumo de obras publicadas para pesquisa.
 
-A API OpenAI **é cobrada por tokens**. Créditos existentes na conta da API são usados, mas a assinatura do ChatGPT não equivale a créditos adicionais da API. A estimativa varia com a extensão do texto e do resumo; consulte os preços atuais em https://platform.openai.com/pricing/.
+**Não substituir** `Code.gs` (ou o código principal de curadoria), `ConsultaWeb.gs` e demais arquivos da automação existente.
 
-### Configuração no Apps Script (projeto existente da Planilha Mestre)
+## Atualização passo a passo
 
-1. Entre em https://platform.openai.com/api-keys e crie uma chave de API em seu projeto autorizado. Se desejar, configure limite de gastos no painel da API.
-2. Na Planilha Mestre, abra **Extensões > Apps Script > Configurações do projeto > Propriedades do script**.
-3. Adicione as propriedades:
-   - Nome: `CETEP_OPENAI_API_KEY` / Valor: sua chave da OpenAI (não a chave/token do GitHub).
-   - Nome: `CETEP_OPENAI_MODEL` / Valor: `gpt-6-luna` (opcional; esse é o padrão). O modelo poderá ser alterado futuramente.
-4. Crie ou substitua o arquivo **`AnaliseMetadadosIA.gs`** pelo código disponível neste repositório.
-5. Atualize **somente `SubmissaoWeb.gs`** com o arquivo do repositório, se ainda não tiver a rota `acao=analisarIA` no `doPost`. **Não substitua `Code.gs`, `ConsultaWeb.gs` nem o sincronizador GitHub.**
-6. Execute `verificarConfiguracaoIA`. A função só verifica a presença e o formato da configuração; **não consome créditos**.
-7. Em **Implantar > Gerenciar implantações**, edite a implantação existente e selecione **Nova versão**. Preserve o acesso restrito à organização e-Nova.
-8. Após confirmar a autorização institucional e configurar o backend, altere em `assets/config.js`: `iaMetadadosAtiva: true`. Isso revela o botão **Aprimorar com GPT**, mas **não inicia nenhuma chamada à API automaticamente**.
-9. Faça primeiro um teste com PDF fictício, sem dados pessoais. Clique **Identificar informações do PDF**, marque o consentimento e então **Aprimorar com GPT**. Verifique os campos sugeridos e os registros de execução do Apps Script. Se houver falha, volte a flag para `false`.
-10. A análise envia texto limitado do PDF somente após consentimento e devolve sugestões para revisão; não registra nem publica trabalho por essa ação.
+1. Faça uma cópia de segurança do projeto ou dos três arquivos Apps Script que serão atualizados.
+2. Abra a **Planilha Mestre > Extensões > Apps Script**.
+3. No editor, substitua integralmente o conteúdo de `SubmissaoWeb.gs` pelo arquivo atualizado do GitHub.
+4. Substitua integralmente o conteúdo de `SincronizarCatalogoGitHub.gs` pela última versão do GitHub.
+5. Se o arquivo `AnaliseMetadadosIA.gs` não existir, crie-o em **+ > Script**. Se existir, substitua seu conteúdo pela versão atualizada do GitHub.
+6. Em **Configurações do projeto > Propriedades do script**, mantenha `CETEP_GITHUB_TOKEN` como já está. Para habilitar a IA, adicione `CETEP_OPENAI_API_KEY` com o valor de uma chave da API OpenAI de um projeto autorizado. Opcionalmente, use `CETEP_OPENAI_MODEL` com valor `gpt-6-luna`.
+7. Clique em **Salvar**. Execute `verificarSubmissaoWeb` e `verificarConfiguracaoIA` (a última só valida a chave; não consome tokens). Execute `sincronizarCatalogoGitHub` uma vez para testar o índice.
+8. Em **Implantar > Gerenciar implantações**, edite **a implantação web existente**, escolha **Nova versão** e confirme. Preserve o mesmo link `/exec`, acesso restrito à organização e-Nova e a configuração de execução que já funciona.
+9. Faça uma submissão de teste com PDF fictício e verifique o recebimento; depois teste a identificação de poucos campos com uma conta e-Nova.
+10. Somente depois de confirmar a autorização institucional para tratamento externo de texto e a resposta da API, altere em `assets/config.js` do GitHub: `iaMetadadosAtiva: false` para `iaMetadadosAtiva: true`. O próprio assistente pode realizar essa alteração no GitHub conectado. A opção fica desativada até essa validação.
 
-### Privacidade e segurança
+**Não reinstale** o gatilho de sincronização dos 15 minutos nem o da curadoria. Se você já acrescentou a pergunta opcional sobre co-orientador ao Google Forms **e ainda não instalou** seu gatilho dedicado, execute `instalarGatilhoCoorientadorFormulario` uma única vez.
 
-- GitHub Pages contém apenas a interface; **não contém o PDF nem a chave da API**.
-- O botão de leitura local não envia texto para a OpenAI.
-- Com GPT, o navegador envia **até 18.000 caracteres extraídos do PDF** ao Apps Script institucional; o Apps Script consulta a API OpenAI. E-mails e CPFs com formato usual são mascarados no navegador antes dessa etapa; nomes de alunos/autores **podem permanecer no texto**.
-- A chamada à OpenAI está configurada com `store: false`, além de saída JSON estruturada; isso **não elimina** a necessidade de autorização institucional e avaliação de proteção de dados.
-- A rota de IA exige conta do domínio e-Nova e aplica um intervalo mínimo entre análises para cada usuário.
-- A análise de IA pode errar: sempre revise título, nomes, resumo e demais campos.
-- O professor continua submetendo o PDF e metadados pelo mesmo fluxo de triagem existente.
+## Privacidade, segurança e consumo de API
 
-### Dificuldades conhecidas
+- A chave OpenAI deve ficar **somente nas propriedades privadas do Apps Script**, nunca no HTML, JS, planilha, GitHub ou conversa.
+- A leitura inicial é executada no navegador. Somente a análise complementar, quando autorizada, envia texto a um serviço externo.
+- Antes de enviar, o JavaScript mascara e-mails e CPFs em formatos usuais. **Nomes de autores podem permanecer**: obtenha a autorização institucional necessária, especialmente se envolver menores de idade.
+- O Apps Script utiliza `store:false`; isso não elimina todas as questões de proteção de dados. Consulte as regras e o contrato de tratamento aplicáveis.
+- Há limite de texto (12 mil caracteres), de saída (`max_output_tokens`) e de frequência por usuário. Mesmo assim, chamadas efetivas à API geram custo segundo as tarifas e créditos da conta API.
+- A contagem de tokens retornada pela API é registrada nos logs da administração, não exibida na interface dos professores.
+- O formulário permanece plenamente utilizável manualmente caso a extração automática falhe.
 
-- **PDF escaneado sem texto:** a leitura local não realiza OCR.
-- **Erro de autenticação/iframe:** confira o acesso e-Nova, a implantação mais recente e o console/registro de execução do Apps Script.
-- **Erro de modelo ou limite de gastos:** valide `CETEP_OPENAI_MODEL`, saldo do projeto API e permissões de acesso ao modelo.
-- **Botão da IA não aparece:** a flag `iaMetadadosAtiva` permanece `false` até a integração ser comprovada.
-- **Formulário Google:** permanece como alternativa de submissão, sem relação com a IA.
-
-## Documentação oficial
-
-- API de Respostas: https://developers.openai.com/api/reference/resources/responses/methods/create
-- Modelo econômico escolhido: https://developers.openai.com/api/docs/models/gpt-6-luna
-- Preços da API: https://platform.openai.com/pricing/
-
-
-### Transparência sobre o uso de GPT e limite de tokens
-
-O resultado de **Identificar pelo PDF (sem IA)** mostra explicitamente `PDF.js` e quantas páginas foram lidas (máximo de cinco); nenhuma chamada à OpenAI acontece.
-
-Quando a função **Aprimorar com GPT** estiver habilitada e for utilizada com consentimento, o backend retorna a identificação do modelo e a contagem REAL de tokens informada pela Responses API (`input_tokens`, `output_tokens`, `total_tokens`). O formulário mostra esses números ao concluir a análise com sucesso. Os trechos encaminhados à API são limitados a 12.000 caracteres, extraídos apenas das cinco primeiras páginas.
-
-Para usar a versão atualizada, substitua o código de `AnaliseMetadadosIA.gs` no projeto Apps Script da Secretaria e publique uma nova versão da implantação. A flag pública `iaMetadadosAtiva` permanece `false` até validação institucional.
+**Documentação oficial:** https://developers.openai.com/api/docs/models/gpt-6-luna e https://platform.openai.com/pricing/.
