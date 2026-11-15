@@ -45,7 +45,7 @@ A autorização de divulgação e a verificação de privacidade **não são mar
 
 ## Sincronização automática do acervo com o GitHub Pages
 
-O arquivo [SincronizarCatalogoGitHub.gs](SincronizarCatalogoGitHub.gs) sincroniza a aba `ACERVO_INSTITUCIONAL` com `data/catalogo-publico.json` a cada 15 minutos. Somente os metadados já publicados no catálogo de consulta são copiados (ID, título, categoria, evento, curso, ano, palavras-chave e link do PDF). Não são enviados nomes de alunos, emails, resumos, dados de triagem nem o próprio PDF.
+O arquivo [SincronizarCatalogoGitHub.gs](SincronizarCatalogoGitHub.gs) sincroniza a aba `ACERVO_INSTITUCIONAL` com `data/catalogo-publico.json` a cada 15 minutos. Somente os dados de trabalhos já publicados no catálogo de consulta são copiados (ID, título, categoria, evento, curso, ano, resumo acadêmico, palavras-chave e link do PDF). Não são enviados nomes de alunos, emails, resumos, dados de triagem nem o próprio PDF.
 
 **Configuração uma única vez (necessária):**
 
