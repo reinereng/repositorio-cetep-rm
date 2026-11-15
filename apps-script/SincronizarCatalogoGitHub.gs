@@ -37,6 +37,24 @@ function removerGatilhoCatalogoGitHub() {
   Logger.log('Gatilho de sincronização removido. Nenhum registro foi apagado.');
 }
 
+/** Padroniza nomes dos cursos no catálogo publicado, inclusive trabalhos antigos. */
+function cursoCatalogoPadronizado_(texto) {
+  const original = String(texto || '').trim();
+  const chave = original.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/\s+/g, ' ').trim();
+  const mapa = {
+    'biocombustivel':'Biocombustíveis', 'biocombustiveis':'Biocombustíveis',
+    'eletrotecnica':'Eletrotécnica', 'mecatronica':'Mecatrônica',
+    'meio ambiente':'Meio Ambiente', 'quimica':'Química',
+    'refrigeracao':'Refrigeração', 'refrigeracao e climatizacao':'Refrigeração',
+    'seguranca do trabalho':'Segurança do Trabalho',
+    'sistemas renovaveis':'Sistemas de Energia Renovável',
+    'sistemas de energias renovaveis':'Sistemas de Energia Renovável',
+    'sistemas de energia renovavel':'Sistemas de Energia Renovável'
+  };
+  return mapa[chave] || original;
+}
+
 function sincronizarCatalogoGitHub() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) return;
@@ -77,7 +95,7 @@ function sincronizarCatalogoGitHub() {
       if (!titulo || !categoria) continue;
       mapa[id] = {
         id:id, titulo:titulo, categoria:categoria,
-        evento:normalizarEvento(r[3]), curso:String(r[4]||'').trim(),
+        evento:normalizarEvento(r[3]), curso:cursoCatalogoPadronizado_(r[4]),
         ano:String(r[5]||'').trim(),
         palavrasChave:String(r[7]||'').trim(), pdf:link
       };
