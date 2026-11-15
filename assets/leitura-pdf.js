@@ -29,7 +29,7 @@
   if (aiReady) {
     aiBtn.disabled = false;
     aiConsentBox.hidden = false;
-    aiDesc.textContent = "Para usar IA, marque a autorização acima. O texto extraído do PDF será processado pelo serviço de IA configurado, sem substituir sua conferência.";
+    aiDesc.textContent = "Para usar GPT, marque a autorização acima. Trechos de texto serão analisados pela API da OpenAI; a conferência dos campos permanece obrigatória.";
   } else {
     aiBtn.hidden = true;
     aiDesc.textContent = "A identificação de campos funciona no próprio navegador, sem enviar o texto do PDF a um serviço externo. Arquivos digitalizados como imagem podem não conter texto reconhecível.";
@@ -225,7 +225,7 @@
     clearTimeout(pending.timeout);pending.iframe.remove();pending=null;aiBtn.disabled=false;
     if(msg.ok && msg.sugestoes && typeof msg.sugestoes==="object"){
       show(Object.fromEntries(Object.entries(msg.sugestoes).filter(([k])=>Object.hasOwn(fields,k))),"Análise por IA");
-    }else{setStatus("A análise por IA não foi concluída: "+String(msg.erro||"verifique a configuração do serviço"));}
+    }else{setStatus("A análise com GPT não foi concluída: "+String(msg.erro||"verifique a configuração do serviço"));}
   });
 
   aiBtn.addEventListener("click",async()=>{
@@ -246,7 +246,7 @@
       const hidden=document.createElement("input");hidden.type="hidden";hidden.name=name;hidden.value=value;post.append(hidden);
     }
     document.body.append(post);aiBtn.disabled=true;
-    setStatus("Analisando os campos com IA. Aguarde a resposta institucional…");
+    setStatus("Analisando os campos com GPT. Aguarde a resposta institucional…");
     const timeout=setTimeout(()=>{
       if(!pending || pending.id!==id)return;
       pending.iframe.remove();pending=null;aiBtn.disabled=false;
