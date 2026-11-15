@@ -24,11 +24,11 @@
     form.action = endpoint;
     btn.disabled = false;
     info.classList.add("submission-notice--ready");
-    info.textContent = "Envio disponível. Entre com sua conta e-Nova, preencha as informações e aguarde a confirmação do recebimento pelo sistema institucional.";
+    info.textContent = "Preencha os campos e envie o PDF para avaliação. Você receberá uma confirmação ao concluir o envio.";
     status.textContent = "Preencha os campos obrigatórios e anexe um PDF para enviar à triagem.";
   } else {
-    info.innerHTML = "O formulário personalizado já está pronto, mas o recebimento automático aguarda a implantação do Apps Script. Até a ativação, utilize o <a href=\"https://forms.gle/a8Pf7tfMcteJvhjP8\" target=\"_blank\" rel=\"noopener noreferrer\">formulário institucional existente</a>.";
-    status.textContent = "Envio temporariamente indisponível. Utilize o formulário existente no link acima.";
+    info.innerHTML = "Este formulário está temporariamente indisponível. Para enviar seu trabalho, utilize o <a href=\"https://forms.gle/a8Pf7tfMcteJvhjP8\" target=\"_blank\" rel=\"noopener noreferrer\">formulário alternativo</a>.";
+    status.textContent = "Envio indisponível neste formulário. Utilize a opção alternativa indicada acima.";
   }
   function formatar(bytes) { return (bytes / 1024 / 1024).toFixed(2).replace(".", ",") + " MB"; }
   arquivo.addEventListener("change", () => {
@@ -84,7 +84,7 @@
     enviando = true;
     btn.disabled = true;
     btn.textContent = "Preparando o PDF…";
-    status.textContent = "Verificando o PDF antes do envio institucional.";
+    status.textContent = "Verificando o arquivo antes do envio.";
     try {
       const buf = await file.slice(0, 5).arrayBuffer();
       const signature = new TextDecoder().decode(buf);
@@ -110,7 +110,7 @@
         (Date.now().toString(36) + "_" + Math.random().toString(36).slice(2) + "_id"));
       $("metadados").value = JSON.stringify(fields);
       $("arquivoBase64").value = base64;
-      status.textContent = "Enviando para a triagem. A página exibirá a confirmação do Apps Script.";
+      status.textContent = "Enviando o trabalho. Aguarde a confirmação de recebimento.";
       btn.textContent = "Enviando…";
       // Um POST HTML padrão evita depender de CORS para script.google.com.
       // O backend retorna página institucional de sucesso/erro; nunca inventamos confirmação local.
