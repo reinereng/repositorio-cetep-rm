@@ -4,7 +4,7 @@
 
 No site **Submeter Trabalho**, selecione um PDF de até 6 MB e clique **Identificar informações do PDF**.
 
-O site usa PDF.js no próprio navegador, lê até as 12 primeiras páginas de texto extraível e sugere título, autores (quando explicitamente identificados), orientador, resumo, palavras-chave, ano, curso, categoria e evento. O professor escolhe as sugestões que deseja aplicar e faz a conferência manual. **O nome completo do(a) orientador(a) é obrigatório para TCCs e banners**. Caso a leitura automática ou o GPT não identifique o nome, ele deverá ser informado manualmente.
+O site usa PDF.js no próprio navegador, lê até as 12 primeiras páginas de texto extraível e sugere título, autores (quando explicitamente identificados), orientador, co-orientador (quando houver), resumo, palavras-chave, ano, curso, categoria e evento. O professor escolhe as sugestões que deseja aplicar e faz a conferência manual. O campo de **co-orientador(a) é opcional**: caso não haja coorientação explícita, ele permanece em branco. O orientador principal segue o requisito original do formulário.
 
 Essa modalidade **não chama nenhum modelo de IA e não consome créditos de API**. Não faz OCR: documentos escaneados como imagem exigem preenchimento manual.
 
