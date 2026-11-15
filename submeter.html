@@ -16,12 +16,37 @@
 </div></section>
 <section class="section" style="padding-top:8px"><div class="container submission-container">
 <div class="submission-intro">
-<div class="submission-steps" aria-label="Etapas do envio"><span><b>1</b> Identificação</span><span><b>2</b> Dados do trabalho</span><span><b>3</b> Arquivo e confirmação</span></div>
+<div class="submission-steps" aria-label="Etapas do envio"><span><b>1</b> PDF e sugestões</span><span><b>2</b> Identificação</span><span><b>3</b> Dados do trabalho</span><span><b>4</b> Confirmação</span></div>
 <div id="aviso-integracao" class="submission-notice" role="status" aria-live="polite">
 Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferir, também está disponível o <a href="https://forms.gle/a8Pf7tfMcteJvhjP8" target="_blank" rel="noopener noreferrer">formulário do Google</a>.
 </div>
 </div>
 <form id="form-submissao" method="POST" action="" target="_self" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded" novalidate>
+<section class="submission-assistant" aria-labelledby="assistente-titulo">
+  <div class="submission-assistant__top">
+    <span class="submission-assistant__label">ASSISTENTE DE PREENCHIMENTO</span>
+    <h2 id="assistente-titulo">Comece pelo PDF</h2>
+    <p>Selecione o documento e peça ao sistema para identificar as informações. Você poderá conferir e corrigir todas as sugestões antes de enviar.</p>
+  </div>
+  <div class="submission-upload"><label for="arquivoPdf">Selecionar PDF do trabalho <span aria-hidden="true">*</span></label><input id="arquivoPdf" type="file" accept=".pdf,application/pdf" required aria-describedby="ajuda-pdf"><p id="ajuda-pdf" class="subtle">O arquivo será encaminhado diretamente ao Google Drive institucional para triagem. Não será armazenado no GitHub.</p><p id="arquivo-info" class="submission-file-info" aria-live="polite">Nenhum arquivo selecionado.</p></div>
+  <div class="submission-assistant__actions">
+    <button type="button" class="button button--blue" id="identificar-pdf">Identificar informações do PDF</button>
+    <button type="button" class="button submission-assistant__ai" id="analisar-com-ia" disabled>Aprimorar com IA</button>
+  </div>
+  <label class="submission-consent submission-consent--ia" id="consentimento-ia-box" hidden>
+    <input type="checkbox" id="consentimento-ia">
+    <span><strong>Autorização para análise com IA:</strong> concordo que trechos do texto do PDF sejam enviados ao serviço de inteligência artificial configurado pelo CETEP-RM exclusivamente para sugerir os campos do formulário. Nenhum trabalho será publicado por essa análise.</span>
+  </label>
+  <p id="ia-explicacao" class="subtle">A identificação inicial funciona no próprio navegador. A análise por modelo de IA requer configuração adicional e autorização para o processamento do texto.</p>
+  <p id="extracao-status" class="submission-assistant__status" role="status" aria-live="polite">Nenhuma leitura iniciada.</p>
+  <section id="revisao-sugestoes" class="submission-suggestions" hidden aria-labelledby="titulo-sugestoes">
+    <h3 id="titulo-sugestoes">Confira as informações encontradas</h3>
+    <p class="subtle">Marque os campos que deseja preencher. As sugestões não substituem a revisão humana.</p>
+    <div id="lista-sugestoes" class="submission-suggestions__list"></div>
+    <button type="button" id="aplicar-sugestoes" class="button button--blue">Aplicar campos selecionados</button>
+  </section>
+</section>
+
 <section class="submission-section" aria-labelledby="sec-identificacao">
 <div class="submission-section-head"><span class="submission-number">01</span><div><h2 id="sec-identificacao">Identificação do responsável</h2><p>Dados para contato durante a conferência do material.</p></div></div>
 <div class="submission-grid">
@@ -45,8 +70,8 @@ Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferi
 <div class="submission-field submission-field--full"><label for="complemento">Informações complementares <span class="optional">(opcional)</span></label><textarea id="complemento" name="complemento" rows="3" maxlength="1000" placeholder="Alguma informação útil para a curadoria"></textarea></div>
 </div></section>
 <section class="submission-section" aria-labelledby="sec-arquivo">
-<div class="submission-section-head"><span class="submission-number">03</span><div><h2 id="sec-arquivo">Arquivo e declaração</h2><p>Somente arquivos PDF, limitados a 6 MB nesta primeira versão.</p></div></div>
-<div class="submission-upload"><label for="arquivoPdf">Selecionar PDF do trabalho <span aria-hidden="true">*</span></label><input id="arquivoPdf" type="file" accept=".pdf,application/pdf" required aria-describedby="ajuda-pdf"><p id="ajuda-pdf" class="subtle">O arquivo será encaminhado diretamente ao Google Drive institucional para triagem. Não será armazenado no GitHub.</p><p id="arquivo-info" class="submission-file-info" aria-live="polite">Nenhum arquivo selecionado.</p></div>
+<div class="submission-section-head"><span class="submission-number">03</span><div><h2 id="sec-arquivo">Conferência e envio</h2><p>Confira as informações preenchidas, confirme a declaração e envie o mesmo PDF selecionado acima.</p></div></div>
+
 <label class="submission-consent"><input type="checkbox" id="aceite" name="aceite" value="sim" required><span>Declaro que o material corresponde a uma versão autorizada para submissão e estou ciente de que a publicação depende de avaliação da curadoria, respeito aos direitos autorais e proteção de dados pessoais. <strong>(Obrigatório)</strong></span></label>
 <p class="submission-status" id="envio-status" role="status" aria-live="polite">Preencha os campos e selecione o PDF para iniciar a submissão.</p>
 <input type="hidden" name="metadados" id="metadados"><input type="hidden" name="arquivoBase64" id="arquivoBase64">
@@ -55,4 +80,4 @@ Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferi
 </form>
 <div class="submission-bottom"><strong>Outra opção de envio:</strong> caso prefira ou encontre dificuldades com este formulário, você também pode utilizar o formulário do Google. <a href="https://forms.gle/a8Pf7tfMcteJvhjP8" data-form-url target="_blank" rel="noopener noreferrer">Abrir formulário do Google</a>.</div>
 </div></section></main><footer class="footer"><div class="container footer-inner"><span>CETEP-RM · Repositório Pedagógico e Científico</span><span>Documentos disponíveis conforme as permissões do domínio e-Nova.</span></div></footer>
-<script src="assets/config.js"></script><script src="assets/app.js"></script><script src="assets/submissao.js" defer></script></body></html>
+<script src="assets/config.js"></script><script src="assets/app.js"></script><script src="assets/submissao.js" defer></script><script type="module" src="assets/leitura-pdf.js"></script></body></html>
