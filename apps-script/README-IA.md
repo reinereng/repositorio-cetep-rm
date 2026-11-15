@@ -1,70 +1,55 @@
-# CETEP-RM — Preenchimento assistido por PDF e análise com IA
+# CETEP-RM — Leitura de PDF e identificação com OpenAI
 
-O portal possui duas modalidades na página **Submeter Trabalho**:
+## 1. Modalidade sem custos de API: identificação local
 
-1. **Identificar informações do PDF** — funciona imediatamente, no navegador, usando PDF.js. Extrai texto digital e sugere os campos detectáveis. Não utiliza modelo de IA, não transmite o documento para outro serviço e não envia o formulário automaticamente.
-2. **Aprimorar com IA** — opcional, utiliza o modelo Gemini chamado pelo Apps Script, mediante autorização explícita e conta institucional e-Nova. **Permanece desativado até a configuração abaixo.**
+No site **Submeter Trabalho**, selecione um PDF de até 6 MB e clique **Identificar informações do PDF**.
 
-O chat de consulta ao acervo é uma funcionalidade diferente e não faz parte desta etapa.
+O site usa PDF.js no próprio navegador, lê até as 12 primeiras páginas de texto extraível e sugere título, autores (quando explicitamente identificados), orientador, resumo, palavras-chave, ano, curso, categoria e evento. O professor escolhe as sugestões que deseja aplicar e faz a conferência manual.
 
-## Como testar agora a identificação local
+Essa modalidade **não chama nenhum modelo de IA e não consome créditos de API**. Não faz OCR: documentos escaneados como imagem exigem preenchimento manual.
 
-Abra a página de submissão no GitHub Pages, selecione um PDF de até 6 MB e clique **Identificar informações do PDF**. Revise o painel de sugestões, marque somente o que estiver correto e clique **Aplicar campos selecionados**. Confira os demais campos, aceite a declaração e envie normalmente.
+## 2. Modalidade opcional com OpenAI
 
-A detecção é limitada a texto extraível das primeiras páginas do PDF (até 12 páginas). Digitalizações como imagens podem não funcionar; ainda não há OCR. Título, autores, orientador, resumo e palavras-chave podem não aparecer, dependendo do modelo do documento. Nenhuma sugestão é aceita automaticamente.
+Foi preparada a integração com a **OpenAI Responses API**, utilizando por padrão o modelo econômico `gpt-6-luna`. O modelo possui saída estruturada em JSON.
 
-## Ativação da análise com IA (opcional)
+**Importante:** a modalidade com GPT só é exibida depois de implantar o código na conta e-Nova, configurar a chave e ativar manualmente `iaMetadadosAtiva` no GitHub. A chave nunca deve ser escrita no frontend público nem compartilhada com o assistente.
 
-Esta integração só deve ser ativada após autorização institucional para processamento externo de textos de documentos. O serviço utiliza uma conta API Gemini e pode estar sujeito a cobrança, limites de uso e políticas de tratamento de dados aplicáveis.
+A API OpenAI **é cobrada por tokens**. Créditos existentes na conta da API são usados, mas a assinatura do ChatGPT não equivale a créditos adicionais da API. A estimativa varia com a extensão do texto e do resumo; consulte os preços atuais em https://platform.openai.com/pricing/.
 
-### 1. Obtenha uma chave da API Gemini
+### Configuração no Apps Script (projeto existente da Planilha Mestre)
 
-Use https://aistudio.google.com/apikey para gerar uma chave em projeto autorizado. Verifique custos, limites de uso e políticas institucionais. **Não envie a chave a outras pessoas ou ao ChatGPT.**
+1. Entre em https://platform.openai.com/api-keys e crie uma chave de API em seu projeto autorizado. Se desejar, configure limite de gastos no painel da API.
+2. Na Planilha Mestre, abra **Extensões > Apps Script > Configurações do projeto > Propriedades do script**.
+3. Adicione as propriedades:
+   - Nome: `CETEP_OPENAI_API_KEY` / Valor: sua chave da OpenAI (não a chave/token do GitHub).
+   - Nome: `CETEP_OPENAI_MODEL` / Valor: `gpt-6-luna` (opcional; esse é o padrão). O modelo poderá ser alterado futuramente.
+4. Crie ou substitua o arquivo **`AnaliseMetadadosIA.gs`** pelo código disponível neste repositório.
+5. Atualize **somente `SubmissaoWeb.gs`** com o arquivo do repositório, se ainda não tiver a rota `acao=analisarIA` no `doPost`. **Não substitua `Code.gs`, `ConsultaWeb.gs` nem o sincronizador GitHub.**
+6. Execute `verificarConfiguracaoIA`. A função só verifica a presença e o formato da configuração; **não consome créditos**.
+7. Em **Implantar > Gerenciar implantações**, edite a implantação existente e selecione **Nova versão**. Preserve o acesso restrito à organização e-Nova.
+8. Para teste, use primeiro um PDF fictício, sem dados pessoais. Somente depois de confirmar a autorização institucional e a funcionalidade do backend, altere no arquivo `assets/config.js`: `iaMetadadosAtiva: true`.
+9. Faça o teste completo de **Aprimorar com GPT**. O sistema envia texto extraído e limitado do PDF **apenas após consentimento**, e devolve sugestões para revisão; não registra nem publica trabalho por essa ação.
 
-### 2. Adicione as propriedades do Apps Script
+### Privacidade e segurança
 
-Abra a Planilha Mestre com a conta e-Nova → **Extensões > Apps Script** → **Configurações do projeto > Propriedades do script** e salve:
+- GitHub Pages contém apenas a interface; **não contém o PDF nem a chave da API**.
+- O botão de leitura local não envia texto para a OpenAI.
+- Com GPT, o navegador envia **até 18.000 caracteres extraídos do PDF** ao Apps Script institucional; o Apps Script consulta a API OpenAI. E-mails e CPFs com formato usual são mascarados no navegador antes dessa etapa; nomes de alunos/autores **podem permanecer no texto**.
+- A chamada à OpenAI está configurada com `store: false`, além de saída JSON estruturada; isso **não elimina** a necessidade de autorização institucional e avaliação de proteção de dados.
+- A rota de IA exige conta do domínio e-Nova e aplica um intervalo mínimo entre análises para cada usuário.
+- A análise de IA pode errar: sempre revise título, nomes, resumo e demais campos.
+- O professor continua submetendo o PDF e metadados pelo mesmo fluxo de triagem existente.
 
-| Propriedade | Valor |
-| --- | --- |
-| `CETEP_GEMINI_API_KEY` | Chave criada na API Gemini |
-| `CETEP_GEMINI_MODELO` | `gemini-3.5-flash-lite` (opcional; use modelo disponível em seu projeto) |
+### Dificuldades conhecidas
 
-**Não use o token do GitHub nesse campo** — a chave da IA é outra credencial. Nunca salve credenciais no GitHub ou no HTML público.
+- **PDF escaneado sem texto:** a leitura local não realiza OCR.
+- **Erro de autenticação/iframe:** confira o acesso e-Nova, a implantação mais recente e o console/registro de execução do Apps Script.
+- **Erro de modelo ou limite de gastos:** valide `CETEP_OPENAI_MODEL`, saldo do projeto API e permissões de acesso ao modelo.
+- **Botão da IA não aparece:** a flag `iaMetadadosAtiva` permanece `false` até a integração ser comprovada.
+- **Formulário Google:** permanece como alternativa de submissão, sem relação com a IA.
 
-### 3. Atualize o código do Apps Script existente
+## Documentação oficial
 
-No projeto Apps Script **vinculado à Planilha Mestre**:
-
-1. Crie um **novo arquivo de script** chamado `AnaliseMetadadosIA` e cole o conteúdo de [AnaliseMetadadosIA.gs](AnaliseMetadadosIA.gs).
-2. Atualize **somente o arquivo `SubmissaoWeb.gs`** com a versão mais recente do [GitHub](SubmissaoWeb.gs). Ela preserva as funções de submissão e contém o encaminhamento `acao=analisarIA` dentro do `doPost`.
-3. **Não substitua o `Code.gs`, `ConsultaWeb.gs` nem `SincronizarCatalogoGitHub.gs`.**
-4. Salve e execute a função `verificarConfiguracaoIA`. Ela não envia texto à API; apenas valida a presença da chave e o nome do modelo.
-5. Em **Implantar > Gerenciar implantações**, edite a implantação existente para criar uma **nova versão** do mesmo aplicativo web, mantendo as permissões de acesso restritas ao e-Nova. Não é necessário gerar uma URL diferente se você editar a implantação existente.
-6. Faça um teste com um PDF de demonstração **sem dados pessoais** usando uma conta e-Nova. Verifique no registro de execução do Apps Script possíveis erros da API/modelo.
-
-### 4. Habilite o botão no GitHub
-
-Somente depois do teste bem-sucedido, altere em `assets/config.js`:
-
-```js
-iaMetadadosAtiva: true
-```
-
-A interface mostrará então o botão **Aprimorar com IA** e um campo de autorização explícita.
-
-## Arquitetura de privacidade
-
-- **GitHub Pages:** interface e código público, nunca contém chave de API ou PDF.
-- **Leitura local PDF.js:** conteúdo do PDF é processado no navegador.
-- **IA (opcional):** apenas os primeiros 18.000 caracteres do texto extraído, com e-mails e CPFs básicos mascarados, são enviados após o consentimento à implantação do Apps Script e daí à API Gemini. **Nomes de autores podem permanecer no texto**. É indispensável verificar a autorização institucional e eventual participação de menores.
-- **Resposta da IA:** apresenta sugestões para o usuário marcar e aplicar. Não grava nem publica nada por si só.
-- **Submissão final:** continua com o mesmo `SubmissaoWeb.gs` e a curadoria habitual.
-
-## Resolução de problemas
-
-- **Não encontrou texto:** PDF pode ser escaneado ou protegido. Preencha manualmente.
-- **IA indisponível:** chave ausente, modelo não autorizado, implantação antiga ou política da conta e-Nova impedindo a requisição.
-- **Sem resposta no navegador:** verifique logs da implantação e o possível bloqueio de terceiros/iframes. A integração via iframe e `postMessage` precisa ser validada com o Apps Script implantado; não é garantida até o teste.
-- **Limite de tamanho:** PDF de até 6 MB para envio, o mesmo limite do formulário existente.
-- **Preferência pelo Google Forms:** o link alternativo permanece na página de submissão.
+- API de Respostas: https://developers.openai.com/api/reference/resources/responses/methods/create
+- Modelo econômico escolhido: https://developers.openai.com/api/docs/models/gpt-6-luna
+- Preços da API: https://platform.openai.com/pricing/
