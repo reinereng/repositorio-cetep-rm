@@ -12,7 +12,7 @@ Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pag
 - `assets/leitura-pdf.js`: identifica título, orientador, resumo e outros metadados na leitura local do PDF; permite revisar antes de preencher.
 - `apps-script/AnaliseMetadadosIA.gs`: integração opcional com a OpenAI Responses API (GPT-6 Luna), após autorização, configuração privada da chave e implantação.
 - [`apps-script/README-IA.md`](apps-script/README-IA.md): configuração da análise por IA e privacidade.
-- `apps-script/SubmissaoWeb.gs`: backend que grava PDF na triagem e acrescenta a linha na Planilha Mestre.
+- `apps-script/SubmissaoWeb.gs`: backend que grava PDF na triagem e acrescenta a linha na Planilha Mestre, incluindo o campo opcional de co-orientação em `SUBMISSOES!AC`.
 - [`apps-script/README.md`](apps-script/README.md): passos de implantação na conta e-Nova.
 - `data/catalogo-publico.json`: índice público **somente de metadados de trabalhos publicados e autorizados**.
 - `assets/logo-cetep-rm-original.png`: imagem original do CETEP-RM, sem redesenho, cópia byte a byte do arquivo fornecido.
