@@ -117,3 +117,27 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
  .submission-actions .subtle{width:100%}
  .submission-steps{font-size:.75rem;gap:7px 10px}
 }
+
+
+/* Assistente de preenchimento — PDF e análise de metadados */
+.submission-assistant{background:linear-gradient(130deg,#ecf6ff,#fff 68%);border:1px solid #b9d9f1;border-radius:18px;padding:30px 33px;margin:8px 0 24px;box-shadow:0 12px 36px #163a5a0b}
+.submission-assistant__top h2{color:var(--navy);font-size:clamp(1.5rem,3vw,2rem);line-height:1.2;margin:6px 0 10px}
+.submission-assistant__top p{color:var(--muted);font-size:.99rem;max-width:790px;margin:0 0 23px}
+.submission-assistant__label{color:var(--blue);font-size:.72rem;font-weight:850;letter-spacing:.11em}
+.submission-assistant__actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:19px}
+.submission-assistant__actions button{cursor:pointer}
+.submission-assistant__actions button:disabled{color:#7d91a2;border-color:#d0dce5;background:#e3eaf0;cursor:not-allowed;transform:none}
+.submission-assistant__ai{background:#fff;border:1px solid #6394c5;color:#17538e}
+.submission-assistant__ai:hover{background:#eaf5ff}
+.submission-assistant__status{background:#fff;border:1px solid #dae7f3;border-radius:9px;padding:12px 15px;color:#32546f;font-size:.88rem;margin:16px 0 0}
+.submission-consent--ia{background:#fff;border-radius:12px;padding:16px;outline:1px solid #d3e1ee}
+.submission-suggestions{margin-top:21px;border-top:1px solid #cbdfea;padding-top:20px}
+.submission-suggestions h3{color:var(--navy);font-size:1.16rem;margin:0 0 6px}
+.submission-suggestions__list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:17px 0}
+.submission-suggestion{display:flex;align-items:flex-start;gap:10px;border-radius:10px;border:1px solid #d7e5f1;padding:13px;background:white;cursor:pointer;min-width:0}
+.submission-suggestion:has(input:checked){border-color:#8bb5dc;background:#f1f8ff}
+.submission-suggestion input{accent-color:var(--blue);width:17px;height:17px;margin:4px 0 0;flex:0 0 17px}
+.submission-suggestion span{display:grid;gap:4px;min-width:0}
+.submission-suggestion strong{font-size:.84rem;color:#1d405e}
+.submission-suggestion small{font-size:.82rem;color:#61738a;overflow-wrap:anywhere;line-height:1.5;max-height:95px;overflow:hidden}
+@media(max-width:720px){.submission-assistant{padding:23px 18px;border-radius:13px}.submission-suggestions__list{grid-template-columns:1fr}.submission-assistant__actions button{width:100%}}
