@@ -4,12 +4,12 @@ Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pag
 
 ## Páginas
 - `index.html`: apresentação.
-- `consultar.html`: **pesquisa realizada dentro do próprio site**, com filtros por título, palavras-chave, categoria, curso, ano e evento.
+- `consultar.html`: **pesquisa realizada dentro do próprio site**, com botão Pesquisar (ou Enter); sem exibir trabalhos antes da busca; filtros por título, palavras-chave, categoria, curso, ano e evento; cartões compactos com até três colunas no desktop.
 - `submeter.html`: formulário próprio, responsivo, com PDF de até 6 MB e envio ao backend Apps Script depois de ativado.
 - `sobre.html`: apresentação institucional.
 - `assets/busca.js`: carregamento e filtragem do catálogo no navegador.
 - `assets/submissao.js`: validação do formulário e envio POST para o Apps Script.
-- `assets/leitura-pdf.js`: identifica título, orientador, resumo e outros metadados na leitura local do PDF; permite revisar antes de preencher.
+- `assets/leitura-pdf.js`: identifica metadados lendo no máximo as cinco primeiras páginas do PDF no navegador, sem IA; informa claramente a origem e permite revisão antes do preenchimento.
 - `apps-script/AnaliseMetadadosIA.gs`: integração opcional com a OpenAI Responses API (GPT-6 Luna), após autorização, configuração privada da chave e implantação.
 - [`apps-script/README-IA.md`](apps-script/README-IA.md): configuração da análise por IA e privacidade.
 - `apps-script/SubmissaoWeb.gs`: backend que grava PDF na triagem e acrescenta a linha na Planilha Mestre, incluindo o campo opcional de co-orientação em `SUBMISSOES!AC`.
@@ -43,3 +43,12 @@ Endereço esperado: https://reinereng.github.io/repositorio-cetep-rm/
 GitHub Pages é público: qualquer pessoa pode examinar os arquivos HTML, CSS, JS e JSON. Coloque ali apenas dados explicitamente autorizados para publicação pública.
 
 **Não** exponha a planilha mestre, tokens, chaves de IA ou dados pessoais. A submissão e a curadoria continuam no Google Workspace e-Nova.
+
+
+## Listas padronizadas de submissão
+
+Os cursos aparecem em ordem alfabética no formulário: **Biocombustíveis, Eletrotécnica, Mecatrônica, Meio Ambiente, Química, Refrigeração, Segurança do Trabalho e Sistemas de Energia Renovável**.
+
+Eventos previstos: **FECITEC, AFROTEC, SEMATEC, Outro evento (campo aberto), Não se aplica**. A ausência de evento é padrão para TCC, mas banners devem informar o evento.
+
+O módulo `assets/dicionarios.js` padroniza sugestões como `QUÍMICA` → `Química`. O backend `apps-script/SubmissaoWeb.gs` valida os cursos no recebimento; o sincronizador `apps-script/SincronizarCatalogoGitHub.gs` normaliza os cursos do índice público, inclusive variações históricas. Essas duas alterações ao Apps Script exigem que o responsável atualize os arquivos no projeto e, para o Web App de submissão, publique uma nova versão.
