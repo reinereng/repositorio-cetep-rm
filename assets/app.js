@@ -19,8 +19,8 @@
   document.querySelectorAll("[data-catalog-url]").forEach(a => { a.href = cfg.consultaWebExec || cfg.catalogoInstitucional; });
   const status = document.querySelector("[data-consulta-status]");
   if (status) status.textContent = cfg.consultaWebExec ?
-    "A pesquisa abre a aplicação institucional, com acesso controlado pelo e-Nova." :
-    "A pesquisa abre o catálogo institucional. Entre com sua conta e-Nova para visualizar os documentos.";
+    "Para consultar os PDFs, entre com sua conta institucional e-Nova." :
+    "Para consultar os PDFs, entre com sua conta institucional e-Nova.";
   // Se o arquivo da logo original ainda não foi carregado, o título textual permanece legível.
   document.querySelectorAll(".brand__logo").forEach(img => img.addEventListener("error", () => img.hidden = true));
 })();
