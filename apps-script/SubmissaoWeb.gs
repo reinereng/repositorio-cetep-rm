@@ -39,6 +39,10 @@ function desativarSubmissaoWeb() {
 }
 
 function doPost(e) {
+  // Análise opt-in: sugere campos, nunca grava PDF nem publica dados.
+  if (e && e.parameter && e.parameter.acao === 'analisarIA') {
+    return analisarMetadadosIA_(e);
+  }
   let retorno;
   try {
     retorno = receberSubmissaoWeb_(e);
