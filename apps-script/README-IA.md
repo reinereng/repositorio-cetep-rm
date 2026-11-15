@@ -4,7 +4,7 @@
 
 No site **Submeter Trabalho**, selecione um PDF de até 6 MB e clique **Identificar informações do PDF**.
 
-O site usa PDF.js no próprio navegador, lê até as 12 primeiras páginas de texto extraível e sugere título, autores (quando explicitamente identificados), orientador, co-orientador (quando houver), resumo, palavras-chave, ano, curso, categoria e evento. O professor escolhe as sugestões que deseja aplicar e faz a conferência manual. O campo de **co-orientador(a) é opcional**: caso não haja coorientação explícita, ele permanece em branco. O orientador principal segue o requisito original do formulário.
+O site usa PDF.js no próprio navegador, lê até as 5 primeiras páginas de texto extraível e sugere título, autores (quando explicitamente identificados), orientador, co-orientador (quando houver), resumo, palavras-chave, ano, curso, categoria e evento. O professor escolhe as sugestões que deseja aplicar e faz a conferência manual. O campo de **co-orientador(a) é opcional**: caso não haja coorientação explícita, ele permanece em branco. O orientador principal segue o requisito original do formulário.
 
 Essa modalidade **não chama nenhum modelo de IA e não consome créditos de API**. Não faz OCR: documentos escaneados como imagem exigem preenchimento manual.
 
@@ -54,3 +54,12 @@ A API OpenAI **é cobrada por tokens**. Créditos existentes na conta da API sã
 - API de Respostas: https://developers.openai.com/api/reference/resources/responses/methods/create
 - Modelo econômico escolhido: https://developers.openai.com/api/docs/models/gpt-6-luna
 - Preços da API: https://platform.openai.com/pricing/
+
+
+### Transparência sobre o uso de GPT e limite de tokens
+
+O resultado de **Identificar pelo PDF (sem IA)** mostra explicitamente `PDF.js` e quantas páginas foram lidas (máximo de cinco); nenhuma chamada à OpenAI acontece.
+
+Quando a função **Aprimorar com GPT** estiver habilitada e for utilizada com consentimento, o backend retorna a identificação do modelo e a contagem REAL de tokens informada pela Responses API (`input_tokens`, `output_tokens`, `total_tokens`). O formulário mostra esses números ao concluir a análise com sucesso. Os trechos encaminhados à API são limitados a 12.000 caracteres, extraídos apenas das cinco primeiras páginas.
+
+Para usar a versão atualizada, substitua o código de `AnaliseMetadadosIA.gs` no projeto Apps Script da Secretaria e publique uma nova versão da implantação. A flag pública `iaMetadadosAtiva` permanece `false` até validação institucional.
