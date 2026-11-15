@@ -41,3 +41,22 @@ Execute `desativarSubmissaoWeb` no projeto Apps Script. O botão da página cont
 
 ### Importante para a administração
 A autorização de divulgação e a verificação de privacidade **não são marcadas como confirmadas automaticamente**. A curadoria continua preenchendo as colunas V, W e X e aprovando pela coluna K, usando o fluxo atual.
+
+
+## Sincronização automática do acervo com o GitHub Pages
+
+O arquivo [SincronizarCatalogoGitHub.gs](SincronizarCatalogoGitHub.gs) sincroniza a aba `ACERVO_INSTITUCIONAL` com `data/catalogo-publico.json` a cada 15 minutos. Somente os metadados já publicados no catálogo de consulta são copiados (ID, título, categoria, evento, curso, ano, palavras-chave e link do PDF). Não são enviados nomes de alunos, emails, resumos, dados de triagem nem o próprio PDF.
+
+**Configuração uma única vez (necessária):**
+
+1. No GitHub, crie um **fine-grained personal access token** com acesso apenas ao repositório `reinereng/repositorio-cetep-rm`, permissão **Contents: Read and write**, e validade limitada.
+2. Na Planilha Mestre, abra **Extensões > Apps Script**. Crie um novo arquivo Script `SincronizarCatalogoGitHub` e cole o conteúdo do arquivo `SincronizarCatalogoGitHub.gs`. Não altere os códigos de publicação existentes.
+3. Em **Configurações do projeto > Propriedades do script**, adicione a propriedade `CETEP_GITHUB_TOKEN` com o valor do token. **Nunca me envie o token**, nem o coloque no GitHub, HTML, JS ou Sheets.
+4. Execute manualmente `sincronizarCatalogoGitHub`. Confirme que o GitHub atualizou o JSON ou que o log mostrou “nenhuma gravação necessária”.
+5. Execute uma única vez `instalarGatilhoCatalogoGitHub`, que agenda a verificação a cada 15 minutos. Ele detecta gatilhos anteriores para evitar duplicatas.
+
+A sincronização não modifica PDFs, não altera permissões de Drive, não aprova trabalhos e não cria arquivos internos no GitHub. Publicações aprovadas ficam disponíveis após a próxima execução e atualização do GitHub Pages.
+
+Para desligar as atualizações automáticas, execute `removerGatilhoCatalogoGitHub` ou revogue o token no GitHub. Ao expirar o token, será necessário substituí-lo nas Propriedades do Script.
+
+**Atenção:** o GitHub Pages é público. A sincronização deve ser usada somente se todos os registros de `ACERVO_INSTITUCIONAL` forem autorizados para divulgação dos metadados. Não coloque nessa aba materiais confidenciais ou ainda pendentes.
