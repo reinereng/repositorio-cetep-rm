@@ -19,7 +19,7 @@
   const aiReady = config.iaMetadadosAtiva === true && /^https:\/\/script\.google\.com\//.test(backendUrl);
   let textExtracted = "", current = {};
   const fields = {
-    titulo: "Título", autores: "Autores", orientador: "Orientador(a)",
+    titulo: "Título", autores: "Autores", orientador: "Nome do(a) orientador(a)",
     resumo: "Resumo", palavrasChave: "Palavras-chave", ano: "Ano",
     curso: "Curso/Área", categoria: "Categoria", evento: "Feira/Evento"
   };
@@ -211,7 +211,7 @@
       applied++;
     }
     suggestions.hidden=true;
-    setStatus(applied+" campo(s) preenchido(s). Confira as informações e conclua manualmente os campos restantes.");
+    setStatus(applied+" campo(s) preenchido(s). Confira as informações e conclua os campos restantes. O nome do(a) orientador(a) é obrigatório.");
     $("titulo")?.scrollIntoView({behavior:"smooth",block:"center"});
   });
 
