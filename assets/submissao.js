@@ -24,7 +24,7 @@
     form.action = endpoint;
     btn.disabled = false;
     info.classList.add("submission-notice--ready");
-    info.textContent = "Conexão institucional configurada. Entre com sua conta e-Nova e realize primeiro um envio de teste; a confirmação do recebimento virá do Apps Script.";
+    info.textContent = "Envio disponível. Entre com sua conta e-Nova, preencha as informações e aguarde a confirmação do recebimento pelo sistema institucional.";
     status.textContent = "Preencha os campos obrigatórios e anexe um PDF para enviar à triagem.";
   } else {
     info.innerHTML = "O formulário personalizado já está pronto, mas o recebimento automático aguarda a implantação do Apps Script. Até a ativação, utilize o <a href=\"https://forms.gle/a8Pf7tfMcteJvhjP8\" target=\"_blank\" rel=\"noopener noreferrer\">formulário institucional existente</a>.";
