@@ -50,3 +50,7 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
 .catalog-note strong{color:#173954}
 @media(max-width:880px){.catalog-field{grid-column:span 6}.catalog-results{grid-template-columns:1fr}}
 @media(max-width:600px){.catalog-heading{display:block}.catalog-total{margin-top:12px}.catalog-field{grid-column:span 12}.catalog-results-head{align-items:flex-start}.catalog-card{padding:21px}.catalog-card__footer{align-items:flex-start}.catalog-id{font-size:.66rem}}
+
+/* Logo oficial: arquivo original, sem recorte ou redesenho */
+.brand__logo{width:74px;height:74px;max-width:none;flex:0 0 74px;object-fit:contain;padding:4px;border:1px solid #dae5ed;border-radius:50%;background:#fff}
+@media(max-width:600px){.brand__logo{width:56px;height:56px;flex-basis:56px;padding:3px}.header-inner{min-height:76px}}
