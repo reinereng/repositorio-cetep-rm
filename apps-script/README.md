@@ -1,0 +1,43 @@
+# Implantação da submissão própria — CETEP-RM
+
+## Situação atual
+O frontend está publicado em `submeter.html` (GitHub Pages). O arquivo do backend está em `SubmissaoWeb.gs`. Ele **ainda precisa ser adicionado à conta e-Nova e implantado**; a conexão GitHub não instala código diretamente no editor Apps Script.
+
+Por segurança, enquanto `submissaoWebExec` estiver vazio em `assets/config.js`, o botão **Enviar para triagem** fica desabilitado e o formulário antigo do Google Forms permanece disponível.
+
+## Configuração no projeto Apps Script já existente
+
+**Não apague, renomeie nem substitua o `Code.gs` ou `ConsultaWeb.gs` que estão funcionando.**
+
+1. Acesse a planilha mestre na conta e-Nova. Abra **Extensões > Apps Script**.
+2. À esquerda, clique em **+ → Script**, crie o arquivo `SubmissaoWeb`.
+3. Copie o conteúdo integral de [SubmissaoWeb.gs](SubmissaoWeb.gs) para o novo arquivo e salve.
+4. Selecione a função `verificarSubmissaoWeb` e clique **Executar**. Autorize as permissões necessárias e confira os registros do log. Essa função apenas verifica planilha e pasta, sem receber arquivos.
+5. **Implantar > Gerenciar implantações**, localize a implantação de aplicativo da web e crie uma nova versão, ou utilize **Implantar > Nova implantação > Aplicativo da Web**. Configure:
+   - **Executar como:** Eu (proprietário do Drive institucional)
+   - **Quem tem acesso:** **Somente usuários da organização e-Nova** (não selecionar Qualquer pessoa)
+6. Copie a URL de implantação terminada em `/exec`.
+7. No GitHub, edite `assets/config.js` e preencha a propriedade `submissaoWebExec` com a URL `/exec`; não inclua token, senha nem dados de estudante.
+8. No editor Apps Script, execute manualmente `ativarSubmissaoWeb` para habilitar o recebimento. Essa função altera apenas uma configuração da automação. **Não reinstale os gatilhos antigos.**
+9. Acesse o site com uma conta e-Nova, envie **um PDF de teste não sensível de até 6 MB** e confira se:
+   - o arquivo foi criado em `01_RECEBIDOS_PARA_TRIAGEM`;
+   - uma nova linha apareceu em `Respostas ao formulário 1`;
+   - a linha correspondente em `SUBMISSOES` está com status **Recebido**;
+   - nenhuma publicação foi feita no catálogo público.
+10. Peça para outro professor testar com a conta e-Nova. Enquanto não confirmar o comportamento do login e do POST do Google Workspace, mantenha o Google Forms como alternativa.
+
+### Observações de segurança
+O site GitHub Pages é público, mas o endpoint deve ficar limitado a contas e-Nova. O backend exige `Session.getActiveUser().getEmail()` com domínio `enova.educacao.ba.gov.br`; se o Google não fornecer a identidade autenticada nessa implantação, o envio será recusado — **não remova essa validação para fazê-lo funcionar**.
+
+O `doPost` recebe um corpo `application/x-www-form-urlencoded` com o PDF convertido para Base64 no navegador, sem usar CORS. Ao concluir, a navegação exibe uma página de confirmação do Apps Script. Os arquivos são recebidos diretamente no Drive, não são armazenados no repositório do GitHub.
+
+O Apps Script que já cataloga os TCCs continua com os mesmos fluxos e gatilhos. Como a linha é acrescentada por código (e não por resposta real do Google Forms), o backend marca o campo `SUBMISSOES!K` como **Recebido** explicitamente.
+
+### Se o PDF tiver mais de 6 MB
+Use o formulário anterior. O limite é intencional para a primeira versão; poderemos ampliar após testar os limites de requisição do Apps Script.
+
+### Como suspender os envios
+Execute `desativarSubmissaoWeb` no projeto Apps Script. O botão da página continuará visível, mas o servidor recusará novos recebimentos e mostrará orientação para usar o formulário antigo.
+
+### Importante para a administração
+A autorização de divulgação e a verificação de privacidade **não são marcadas como confirmadas automaticamente**. A curadoria continua preenchendo as colunas V, W e X e aprovando pela coluna K, usando o fluxo atual.
