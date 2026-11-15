@@ -6,8 +6,8 @@ Na página **Submeter trabalho**, o usuário vê apenas o botão **Pesquisar no 
 
 1. O navegador lê texto extraível de **até cinco páginas** do PDF, sem enviar o documento para IA.
 2. Se encontrar **cinco ou mais campos**, exibe as sugestões para conferência, sem gastar tokens.
-3. Se encontrar **quatro campos ou menos**, e a integração com OpenAI estiver habilitada, pergunta se o usuário **autoriza enviar trechos do texto para uma análise complementar por IA**. É uma autorização específica, apresentada somente quando necessária. Uma resposta negativa mantém a identificação local.
-4. Quando houver autorização, até **12.000 caracteres** do texto extraído são enviados ao Apps Script, que chama a OpenAI e retorna sugestões para revisão. Nada é publicado ou submetido automaticamente pela análise.
+3. Se encontrar **menos de quatro campos** (zero a três) e a integração com OpenAI estiver habilitada, inicia automaticamente a análise complementar, sem pedir uma confirmação adicional. Um aviso claro sobre o possível processamento por IA aparece antes do botão Pesquisar no PDF.
+4. Quando o complemento for necessário, até **12.000 caracteres** do texto extraído podem ser enviados ao Apps Script, que chama a OpenAI e retorna apenas sugestões para campos ainda não identificados. Nada é publicado ou submetido automaticamente pela análise.
 5. Caso a integração esteja desativada, falhe, ou não haja texto extraível, o professor pode preencher o restante manualmente.
 
 **Importante:** o sistema não realiza OCR. PDFs digitalizados como imagem podem exigir preenchimento manual. A IA é uma ajuda, não uma validação da exatidão dos dados. Co-orientador é opcional; os demais campos seguem a validação do formulário.
@@ -33,14 +33,14 @@ O projeto Apps Script é aquele vinculado à **Planilha Mestre** da conta e-Nova
 7. Clique em **Salvar**. Execute `verificarSubmissaoWeb` e `verificarConfiguracaoIA` (a última só valida a chave; não consome tokens). Execute `sincronizarCatalogoGitHub` uma vez para testar o índice.
 8. Em **Implantar > Gerenciar implantações**, edite **a implantação web existente**, escolha **Nova versão** e confirme. Preserve o mesmo link `/exec`, acesso restrito à organização e-Nova e a configuração de execução que já funciona.
 9. Faça uma submissão de teste com PDF fictício e verifique o recebimento; depois teste a identificação de poucos campos com uma conta e-Nova.
-10. Somente depois de confirmar a autorização institucional para tratamento externo de texto e a resposta da API, altere em `assets/config.js` do GitHub: `iaMetadadosAtiva: false` para `iaMetadadosAtiva: true`. O próprio assistente pode realizar essa alteração no GitHub conectado. A opção fica desativada até essa validação.
+10. A configuração pública do GitHub já está com `iaMetadadosAtiva: true`. Assim que a implantação Apps Script atualizada estiver funcional, o complemento poderá ocorrer automaticamente nas buscas com menos de quatro campos. Em caso de erro, a leitura local e o preenchimento manual continuam disponíveis. Para suspender chamadas à API, altere a flag para `false`.
 
 **Não reinstale** o gatilho de sincronização dos 15 minutos nem o da curadoria. Se você já acrescentou a pergunta opcional sobre co-orientador ao Google Forms **e ainda não instalou** seu gatilho dedicado, execute `instalarGatilhoCoorientadorFormulario` uma única vez.
 
 ## Privacidade, segurança e consumo de API
 
 - A chave OpenAI deve ficar **somente nas propriedades privadas do Apps Script**, nunca no HTML, JS, planilha, GitHub ou conversa.
-- A leitura inicial é executada no navegador. Somente a análise complementar, quando autorizada, envia texto a um serviço externo.
+- A leitura inicial é executada no navegador. A análise complementar, quando necessária e habilitada, pode enviar texto a um serviço externo automaticamente, após o usuário iniciar a busca com conhecimento do aviso na página. Isso não dispensa a verificação institucional de uma base legal adequada ao tratamento dos dados.
 - Antes de enviar, o JavaScript mascara e-mails e CPFs em formatos usuais. **Nomes de autores podem permanecer**: obtenha a autorização institucional necessária, especialmente se envolver menores de idade.
 - O Apps Script utiliza `store:false`; isso não elimina todas as questões de proteção de dados. Consulte as regras e o contrato de tratamento aplicáveis.
 - Há limite de texto (12 mil caracteres), de saída (`max_output_tokens`) e de frequência por usuário. Mesmo assim, chamadas efetivas à API geram custo segundo as tarifas e créditos da conta API.
