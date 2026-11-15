@@ -1,7 +1,8 @@
 /* CETEP-RM — leitura de PDF e preenchimento assistido.
  * O usuário inicia uma identificação. A leitura local precede qualquer chamada externa.
- * Somente se houver até 4 campos identificados E a integração estiver habilitada,
- * é solicitada autorização explícita para análise complementar com IA.
+ * Se forem reconhecidos menos de 4 campos e o serviço estiver habilitado,
+ * o complemento por IA é acionado sem janela de confirmação adicional.
+ * O visitante é informado antes de iniciar a busca no próprio formulário.
  */
 (() => {
   "use strict";
@@ -209,17 +210,11 @@
       textExtracted = result.all;
       localFound = guess(result.all, result.pages);
       const foundCount = show(localFound);
-      if (aiReady && foundCount <= lowConfidenceLimit && textExtracted.length >= 120) {
-        const autorizado = window.confirm(
-          "Foram identificadas poucas informações neste documento. " +
-          "Autoriza uma análise complementar por inteligência artificial? " +
-          "Trechos do texto podem conter nomes e serão enviados a um serviço externo apenas " +
-          "para sugerir o preenchimento. Você poderá revisar tudo antes do envio."
-        );
-        if (autorizado) {
-          solicitarComplementoIA();
-          return;
-        }
+      // O clique em "Pesquisar no PDF" inicia a busca completa. A etapa externa
+      // só é usada quando a identificação local encontrou 0, 1, 2 ou 3 campos.
+      if (aiReady && foundCount < lowConfidenceLimit && textExtracted.length >= 120) {
+        solicitarComplementoIA();
+        return;
       }
     } catch (error) {
       setStatus(error.message || "Não foi possível ler o arquivo. Preencha manualmente.");
@@ -250,8 +245,9 @@
   });
 
 
-  // A análise complementar somente é solicitada após autorização explícita.
-  // O formulário HTML faz POST ao aplicativo web sem expor a credencial de API.
+  // O complemento é ativado após busca voluntária do PDF, quando necessário.
+  // O formulário avisa previamente que poderá haver processamento por IA.
+  // O HTML faz POST ao aplicativo web sem expor a credencial da API.
   function limparPendente() {
     if (!pending) return;
     clearTimeout(pending.timeout);
@@ -277,7 +273,8 @@
       const merged = {...localFound};
       for (const key of Object.keys(fields)) {
         const suggestion = clean(msg.sugestoes[key]);
-        if (suggestion) merged[key] = suggestion;
+        // Preserva o que já foi extraído; a IA completa somente os campos ausentes.
+        if (suggestion && !clean(merged[key])) merged[key] = suggestion;
       }
       show(merged);
       setStatus("A identificação foi concluída. Revise e selecione os dados que deseja preencher.");
@@ -311,7 +308,7 @@
       const parameters = {
         acao:"analisarIA",
         requisicaoId:id,
-        consentimento:"sim",
+        analiseAutomatica:"sim",
         // Limite de tamanho. PDFs e e-mails/CPFs não são enviados ao modelo.
         textoPDF:textExtracted.slice(0,aiMaxChars)
           .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]")
