@@ -7,5 +7,8 @@ window.CETEP_CONFIG = Object.freeze({
   // Implantação no domínio e-Nova. O envio exige autenticação institucional e backend ativado.
   // Nunca insira credenciais nem tokens neste arquivo público.
   submissaoWebExec: "https://script.google.com/a/macros/enova.educacao.ba.gov.br/s/AKfycbxV-5h0bbdy1EiDS5XTBEtK_VTxx0yRSx1eP59uISRUiBeTxSTmyizvKWAAtAi8tdF34Q/exec",
-  limitePdfMB: 6
+  limitePdfMB: 6,
+  // Ativar apenas após instalar AnaliseMetadadosIA.gs, salvar a chave no Apps Script,
+  // reimplantar SubmissaoWeb.gs e testar com a conta institucional.
+  iaMetadadosAtiva: false
 });
