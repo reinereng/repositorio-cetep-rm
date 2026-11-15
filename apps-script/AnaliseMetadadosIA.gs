@@ -15,7 +15,7 @@ const METADADOS_IA = Object.freeze({
   modeloPadrao: 'gpt-6-luna',
   origemSite: 'https://reinereng.github.io',
   dominio: 'enova.educacao.ba.gov.br',
-  limiteCaracteres: 18000
+  limiteCaracteres: 12000
 });
 
 /** Confere as propriedades sem fazer chamadas à API nem gerar custos. */
@@ -43,7 +43,7 @@ function analisarMetadadosIA_(e) {
     }
     const txt = String(e.parameter.textoPDF || '').trim();
     if (txt.length < 120 || txt.length > METADADOS_IA.limiteCaracteres) {
-      throw new Error('O PDF não forneceu texto suficiente ou excedeu o limite de 18.000 caracteres.');
+      throw new Error('O PDF não forneceu texto suficiente ou excedeu o limite de 12.000 caracteres.');
     }
     const props = PropertiesService.getScriptProperties();
     const key = String(props.getProperty(METADADOS_IA.propriedadeChave) || '').trim();
@@ -132,7 +132,18 @@ function analisarMetadadosIA_(e) {
     if (clean.categoria && !['Trabalho de Conclusão de Curso (TCC)','Banner de pesquisa'].includes(clean.categoria)) {
       clean.categoria = '';
     }
-    return enviarRespostaIA_({tipo:'CETEP_IA_METADADOS',requisicaoId:id,ok:true,sugestoes:clean});
+    // Uso medido pela API: o frontend informa tokens reais para transparência.
+    const uso = result.usage || {};
+    const consumo = {
+      entrada: Number(uso.input_tokens) || 0,
+      saida: Number(uso.output_tokens) || 0,
+      total: Number(uso.total_tokens) || 0
+    };
+    Logger.log('IA metadados: modelo ' + model + ', tokens totais ' + consumo.total);
+    return enviarRespostaIA_({
+      tipo:'CETEP_IA_METADADOS',requisicaoId:id,ok:true,sugestoes:clean,
+      modelo:model, consumo:consumo
+    });
   } catch (error) {
     Logger.log('Extração de metadados: ' + String(error && error.message ? error.message : error).slice(0,250));
     return enviarRespostaIA_({
