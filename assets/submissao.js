@@ -25,7 +25,7 @@
     btn.disabled = false;
     info.classList.add("submission-notice--ready");
     info.textContent = "Preencha os campos e envie o PDF para avaliação. Você receberá uma confirmação ao concluir o envio.";
-    status.textContent = "Preencha os campos obrigatórios e anexe um PDF para enviar à triagem.";
+    status.textContent = "Preencha os campos obrigatórios e anexe um PDF para enviar o trabalho.";
   } else {
     info.innerHTML = "Este formulário está temporariamente indisponível. Para enviar seu trabalho, utilize o <a href=\"https://forms.gle/a8Pf7tfMcteJvhjP8\" target=\"_blank\" rel=\"noopener noreferrer\">formulário alternativo</a>.";
     status.textContent = "Envio indisponível neste formulário. Utilize a opção alternativa indicada acima.";
@@ -118,7 +118,7 @@
     } catch (err) {
       enviando = false;
       btn.disabled = false;
-      btn.textContent = "Enviar para triagem";
+      btn.textContent = "Enviar trabalho";
       status.textContent = err.message || "Não foi possível preparar o envio.";
       $("arquivoBase64").value = "";
     }
