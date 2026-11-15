@@ -1,28 +1,36 @@
 # Repositório Pedagógico e Científico — CETEP-RM
 
-Portal responsivo em **HTML, CSS e JavaScript**, preparado para GitHub Pages.
+Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pages.
 
 ## Páginas
 - `index.html`: apresentação.
-- `consultar.html`: acesso ao acervo autenticado e-Nova.
-- `submeter.html`: formulário de submissão.
-- `sobre.html`: informações institucionais.
-- `assets/style.css`: design responsivo.
-- `assets/app.js`: navegação e links.
-- `assets/config.js`: URLs dos serviços existentes.
+- `consultar.html`: **pesquisa realizada dentro do próprio site**, com filtros por título, palavras-chave, categoria, curso, ano e evento.
+- `submeter.html`: acesso ao formulário de envio.
+- `sobre.html`: apresentação institucional.
+- `assets/busca.js`: carregamento e filtragem do catálogo no navegador.
+- `data/catalogo-publico.json`: índice público **somente de metadados de trabalhos publicados e autorizados**.
+- `assets/logo-cetep-rm-original.png`: imagem original do CETEP-RM, sem redesenho, cópia byte a byte do arquivo fornecido.
 
-## Publicar
-Em **Settings > Pages > Build and deployment**, escolha **Deploy from a branch**, branch `main`, pasta `/(root)` e salve. Aguarde o indicador de publicação. Endereço previsto: `https://reinereng.github.io/repositorio-cetep-rm/`.
+## Como funciona a consulta
+A página carrega `data/catalogo-publico.json` no próprio domínio do site, processa os filtros localmente e apresenta cartões para cada trabalho. **Não abre a planilha.** Quando houver PDF autorizado, o cartão tem link direto ao documento no Drive.
+
+A divulgação dos metadados NÃO altera permissões de arquivo: PDFs podem continuar exigindo acesso institucional e-Nova.
+
+### Sincronização de novos trabalhos
+**Importante:** a catalogação pelo Google Apps Script continua independente. Neste momento, o índice JSON do GitHub **não é atualizado automaticamente** quando um novo trabalho for aprovado no Google Sheets.
+
+Para atualizar, use exclusivamente as linhas com status **Publicado** da planilha de consulta institucional (não a planilha mestre), selecione os campos públicos `id`, `titulo`, `categoria`, `evento`, `curso`, `ano`, `palavrasChave`, `pdf` e atualize `data/catalogo-publico.json`.
+
+Nunca inclua nomes de alunos, e-mails, identificadores pessoais, dados da triagem, arquivos internos ou documentos ainda não aprovados.
+
+**Próxima melhoria planejada:** sincronizar automaticamente esse índice público com o catálogo institucional por um serviço autenticado, sem publicar tokens/chaves no código do GitHub Pages.
+
+## Publicação
+Configurar em Settings → Pages → Deploy from a branch → `main` → `/(root)`.
+
+Endereço esperado: https://reinereng.github.io/repositorio-cetep-rm/
 
 ## Segurança
-O portal GitHub Pages é **público**. Não publicar PDFs restritos, dados pessoais de estudantes, Planilha Mestre ou credenciais no repositório.
-Os documentos seguem no Google Drive / Planilhas / Apps Script, com controle de acesso e-Nova. O botão de consulta abre o acervo institucional.
+GitHub Pages é público: qualquer pessoa pode examinar os arquivos HTML, CSS, JS e JSON. Coloque ali apenas dados explicitamente autorizados para publicação pública.
 
-## Consulta integrada
-Caso exista a URL `/exec` do Apps Script de consulta autenticada, pode-se configurá-la em `assets/config.js` no campo `consultaWebExec`, depois de verificar o modelo de autenticação. Não exponha uma API que execute como proprietário e forneça registros protegidos sem validar a identidade.
-
-## Logo original
-O projeto utiliza uma identificação textual no cabeçalho. Para adicionar a logo oficial **sem alterar nenhum traço**, envie o PNG original para `assets/logo-cetep-rm-original.png` e acrescente uma tag `<img>` no elemento `.brand` em cada página, usando a classe `brand__logo`. Não usar logos redesenhadas por IA.
-
-## Próximas etapas
-Avaliar responsividade, vincular pesquisa diretamente ao serviço autenticado e posteriormente considerar extração de metadados de PDF mediante revisão e aprovação humana, sem expor chaves de IA no frontend.
+**Não** exponha a planilha mestre, tokens, chaves de IA ou dados pessoais. A submissão e a curadoria continuam no Google Workspace e-Nova.
