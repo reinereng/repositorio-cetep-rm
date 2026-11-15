@@ -136,9 +136,15 @@ function receberSubmissaoWeb_(e) {
       const linha = cx.respostas.getLastRow() + 1;
       cx.respostas.getRange(linha, 1, 1, 17).setValues([valores]);
       linhaCriada = true;
+      // Caso a pergunta de co-orientação já exista no Google Forms,
+      // também guardamos a resposta na coluna atribuída pelo próprio Forms.
+      const colunaCoFormulario = localizarColunaCoorientador_(cx.respostas);
+      if (colunaCoFormulario > 0) {
+        cx.respostas.getRange(linha, colunaCoFormulario).setValue(seguro(d.coorientador));
+      }
       // Inserção via Apps Script NÃO dispara o gatilho onFormSubmit: marca explicitamente.
       cx.curadoria.getRange(linha, 11).setValue('Recebido');
-      // SUBMISSOES!AC (coluna 29), campo separado da coorientação.
+      // SUBMISSOES!AC (coluna 29), campo exclusivo de co-orientação.
       // Não alteramos a ordem das 17 colunas ligadas ao Google Forms.
       cx.curadoria.getRange(linha, 29).setValue(seguro(d.coorientador));
       SpreadsheetApp.flush();
@@ -156,6 +162,50 @@ function receberSubmissaoWeb_(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/**
+ * Encontra a pergunta de co-orientação quando for acrescentada ao Google Forms.
+ * Não altera o cabeçalho da aba de respostas nem a posição das colunas atuais.
+ */
+function localizarColunaCoorientador_(abaRespostas) {
+  const ultima = abaRespostas.getLastColumn();
+  if (ultima < 1) return 0;
+  const titulos = abaRespostas.getRange(1, 1, 1, ultima).getDisplayValues()[0];
+  const index = titulos.findIndex(t => /co[\s-]*orientador(?:a)?/i.test(
+    String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  ));
+  return index < 0 ? 0 : index + 1;
+}
+
+/** Um envio pelo Google Forms também preserva a co-orientação em SUBMISSOES!AC. */
+function registrarCoorientadorFormulario(e) {
+  if (!e || !e.range || e.range.getSheet().getName() !== CFG.abaRespostas) return;
+  const resposta = e.range.getSheet();
+  const coluna = localizarColunaCoorientador_(resposta);
+  if (!coluna || e.range.getRow() < 2) return;
+  const nome = String(resposta.getRange(e.range.getRow(), coluna).getDisplayValue() || '').trim();
+  if (nome.length > 200) throw new Error('Nome do(a) co-orientador(a) ultrapassa 200 caracteres.');
+  const mestre = SpreadsheetApp.openById(CFG.planilhaMestre).getSheetByName(CFG.abaSubmissoes);
+  if (mestre.getRange(1, 29).getDisplayValue() !== 'Co-orientador(a)') {
+    throw new Error('A coluna SUBMISSOES!AC precisa estar configurada como Co-orientador(a).');
+  }
+  mestre.getRange(e.range.getRow(), 29).setValue(nome);
+}
+
+/**
+ * Execute uma única vez APÓS incluir a pergunta de co-orientador no Google Forms.
+ * Não altera o gatilho registrarSubmissao existente.
+ */
+function instalarGatilhoCoorientadorFormulario() {
+  const ativos = ScriptApp.getProjectTriggers().map(t => t.getHandlerFunction());
+  if (ativos.includes('registrarCoorientadorFormulario')) {
+    Logger.log('Gatilho de co-orientação já está instalado.');
+    return;
+  }
+  const ss = SpreadsheetApp.openById(CFG.planilhaMestre);
+  ScriptApp.newTrigger('registrarCoorientadorFormulario').forSpreadsheet(ss).onFormSubmit().create();
+  Logger.log('Gatilho de co-orientação instalado sem modificar os anteriores.');
 }
 
 function contextoEnvioWeb_() {
