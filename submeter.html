@@ -26,19 +26,12 @@ Preencha os dados do trabalho e anexe o PDF. Se preferir, utilize o <a href="htt
   <div class="submission-assistant__top">
     <span class="submission-assistant__label">ASSISTENTE DE PREENCHIMENTO</span>
     <h2 id="assistente-titulo">Comece pelo PDF</h2>
-    <p>O sistema lê até as <strong>5 primeiras páginas</strong> do PDF e sugere os campos encontrados. Revise todas as informações antes do envio.</p>
+    <p>Selecione o documento para identificar automaticamente as informações do trabalho. Confira as sugestões antes de preencher o formulário.</p>
   </div>
   <div class="submission-upload"><label for="arquivoPdf">Selecionar PDF do trabalho <span aria-hidden="true">*</span></label><input id="arquivoPdf" type="file" accept=".pdf,application/pdf" required aria-describedby="ajuda-pdf"><p id="ajuda-pdf" class="subtle">O documento será encaminhado para avaliação e só ficará disponível para consulta após a aprovação.</p><p id="arquivo-info" class="submission-file-info" aria-live="polite">Nenhum arquivo selecionado.</p></div>
   <div class="submission-assistant__actions">
-    <button type="button" class="button button--blue" id="identificar-pdf">Identificar pelo PDF (sem IA)</button>
-    <button type="button" class="button submission-assistant__ai" id="analisar-com-ia" disabled>Aprimorar com GPT</button>
+    <button type="button" class="button button--blue" id="identificar-pdf">Pesquisar no PDF</button>
   </div>
-  <label class="submission-consent submission-consent--ia" id="consentimento-ia-box" hidden>
-    <input type="checkbox" id="consentimento-ia">
-    <span><strong>Autorização para análise com GPT:</strong> concordo que trechos do texto do PDF sejam enviados ao serviço de IA da OpenAI configurado pelo CETEP-RM exclusivamente para sugerir os campos do formulário. Nenhum trabalho será publicado por essa análise.</span>
-  </label>
-  <p id="ia-explicacao" class="subtle">A leitura inicial não utiliza inteligência artificial. A análise com GPT, quando disponível, depende de sua autorização.</p>
-  <p id="origem-extracao" class="submission-assistant__method" aria-live="polite"><strong>Leitura automática do PDF</strong> — sem IA e sem consumo de créditos.</p>
   <p id="extracao-status" class="submission-assistant__status" role="status" aria-live="polite">Nenhuma leitura iniciada.</p>
   <section id="revisao-sugestoes" class="submission-suggestions" hidden aria-labelledby="titulo-sugestoes">
     <h3 id="titulo-sugestoes">Confira as informações encontradas</h3>
@@ -104,4 +97,4 @@ Preencha os dados do trabalho e anexe o PDF. Se preferir, utilize o <a href="htt
 </form>
 <div class="submission-bottom"><strong>Outra opção de envio:</strong> se preferir ou encontrar dificuldades, você também pode utilizar o <a href="https://forms.gle/a8Pf7tfMcteJvhjP8" data-form-url target="_blank" rel="noopener noreferrer">formulário alternativo</a>.</div>
 </div></section></main><footer class="footer"><div class="container footer-inner"><span>CETEP-RM · Repositório Pedagógico e Científico</span><span>Educação profissional, pesquisa e inovação.</span></div></footer>
-<script src="assets/config.js"></script><script src="assets/app.js?v=20261115-visitante2"></script><script src="assets/dicionarios.js?v=20261115-oficiais"></script><script src="assets/submissao.js?v=20261115-visitante2" defer></script><script type="module" src="assets/leitura-pdf.js?v=20261115-visitante2"></script></body></html>
+<script src="assets/config.js"></script><script src="assets/app.js?v=20261115-visitante2"></script><script src="assets/dicionarios.js?v=20261115-oficiais"></script><script src="assets/submissao.js?v=20261115-visitante2" defer></script><script type="module" src="assets/leitura-pdf.js?v=20261115-busca-simples1"></script></body></html>
