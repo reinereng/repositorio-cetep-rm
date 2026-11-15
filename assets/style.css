@@ -65,3 +65,55 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
   .brand__name{font-size:.88rem}
   .brand__sub{font-size:.65rem}
 }
+
+
+/* Etapa 1 — formulário institucional em GitHub Pages */
+.submission-container{max-width:990px}
+.submission-intro{margin-bottom:20px}
+.submission-steps{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;color:var(--muted);font-size:.84rem;font-weight:700}
+.submission-steps span{display:inline-flex;align-items:center;gap:7px}
+.submission-steps b{display:inline-flex;width:25px;height:25px;border-radius:50%;background:#e2f0ff;color:var(--blue);align-items:center;justify-content:center}
+.submission-notice{background:#fff9e8;border:1px solid #efdda2;border-radius:12px;padding:15px 19px;color:#72531a;font-size:.91rem}
+.submission-notice a{font-weight:750}
+.submission-notice--ready{background:#eaf6f0;border-color:#b6dfd0;color:#2c624f}
+.submission-section{background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:0 11px 36px #153b6410;padding:30px 33px;margin:18px 0}
+.submission-section-head{display:flex;align-items:flex-start;gap:17px;margin-bottom:26px}
+.submission-section-head h2{font-size:1.42rem;color:var(--navy);line-height:1.26;margin:0 0 5px}
+.submission-section-head p{font-size:.92rem;color:var(--muted);margin:0}
+.submission-number{width:43px;height:43px;flex:0 0 43px;border-radius:12px;display:grid;place-items:center;font-weight:850;font-size:.84rem;background:#eaf3ff;color:var(--blue)}
+.submission-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px}
+.submission-field{display:flex;flex-direction:column;min-width:0;gap:7px}
+.submission-field--full{grid-column:1/-1}
+.submission-field label,.submission-upload label{display:block;font-size:.91rem;font-weight:750;color:#294259}
+.submission-field label span[aria-hidden],.submission-upload label span[aria-hidden]{color:var(--red)}
+.submission-field input,.submission-field select,.submission-field textarea{width:100%;border:1px solid #bdcedf;background:#fff;border-radius:10px;padding:11px 13px;line-height:1.5;font:inherit;color:var(--ink);min-height:46px;transition:border-color .16s,box-shadow .16s}
+.submission-field textarea{resize:vertical}
+.submission-field input:focus,.submission-field textarea:focus,.submission-field select:focus,.submission-upload input:focus{outline:none;border-color:#1267bd;box-shadow:0 0 0 3px #dceeff}
+.submission-field input::placeholder,.submission-field textarea::placeholder{color:#8393a5}
+.submission-field small{font-size:.76rem;color:var(--muted)}
+.submission-field .optional{color:#708397;font-size:.75rem;font-weight:500}
+.submission-upload{border:2px dashed #b6d4ed;background:#f5faff;border-radius:12px;padding:22px}
+.submission-upload input{display:block;width:100%;margin:10px 0;padding:7px;border:1px solid #d3e4f5;background:white;border-radius:8px;max-width:100%}
+.submission-upload p{margin:7px 0 0}
+.submission-file-info{font-size:.84rem;font-weight:680;color:#31587b}
+.submission-file-info--bad{color:#b3263c}
+.submission-consent{display:flex;gap:14px;align-items:flex-start;margin:22px 0 14px;font-size:.9rem;color:#425e76;line-height:1.7}
+.submission-consent input{width:21px;height:21px;flex:0 0 21px;accent-color:var(--blue);margin:2px 0 0}
+.submission-status{font-size:.9rem;background:#eff5fc;color:#31587b;border-radius:9px;padding:11px 14px;margin:16px 0}
+.submission-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.submission-actions button{cursor:pointer;min-width:210px}
+.submission-actions button:disabled{background:#9baebe;color:#fff;cursor:not-allowed;transform:none}
+.submission-actions .subtle{margin:0;flex:1}
+.submission-bottom{font-size:.88rem;margin:18px 0 35px;padding:14px 18px;border-left:3px solid #8ebadf;background:#eaf3fc;border-radius:0 9px 9px 0;color:#41617e}
+@media(max-width:680px){
+ .submission-section{padding:22px 18px;margin:13px 0;border-radius:14px}
+ .submission-section-head{gap:11px;margin-bottom:20px}
+ .submission-section-head h2{font-size:1.2rem}
+ .submission-number{width:36px;height:36px;flex-basis:36px}
+ .submission-grid{grid-template-columns:1fr;gap:17px}
+ .submission-field{grid-column:1/-1}
+ .submission-upload{padding:15px}
+ .submission-actions button{width:100%}
+ .submission-actions .subtle{width:100%}
+ .submission-steps{font-size:.75rem;gap:7px 10px}
+}
