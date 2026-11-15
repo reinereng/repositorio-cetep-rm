@@ -32,6 +32,8 @@
     aiDesc.textContent = "Para usar GPT, marque a autorização acima. Trechos de texto serão analisados pela API da OpenAI; a conferência dos campos permanece obrigatória.";
   } else {
     aiBtn.hidden = true;
+    aiBtn.disabled = true;
+    aiConsentBox.hidden = true;
     aiDesc.textContent = "A identificação de campos funciona no próprio navegador, sem enviar o texto do PDF a um serviço externo. Arquivos digitalizados como imagem podem não conter texto reconhecível.";
   }
   function setStatus(message) { status.textContent = message; }
