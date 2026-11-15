@@ -62,6 +62,13 @@
       keywords.append(document.createTextNode(item.palavrasChave));
       article.append(keywords);
     }
+    if (item.resumo) {
+      const details = criarElemento("details", "catalog-card__abstract");
+      const toggle = criarElemento("summary", "", "Ler resumo");
+      const paragraph = criarElemento("p", "", item.resumo);
+      details.append(toggle, paragraph);
+      article.append(details);
+    }
     const footer = criarElemento("div", "catalog-card__footer");
     footer.append(criarElemento("span", "catalog-id", item.id));
     const pdfUrl = validPdf(item.pdf);
@@ -91,7 +98,7 @@
       return;
     }
     const matches = records.filter(r => {
-      const corpus = normalizar([r.titulo, r.palavrasChave, r.curso, r.categoria, r.evento, r.ano].join(" "));
+      const corpus = normalizar([r.titulo, r.palavrasChave, r.resumo, r.curso, r.categoria, r.evento, r.ano].join(" "));
       return (!q || q.split(/\s+/).every(word => corpus.includes(word))) &&
         (!filters.categoria.value || r.categoria === filters.categoria.value) &&
         (!filters.curso.value || r.curso === filters.curso.value) &&
@@ -127,19 +134,27 @@
     filters.busca.focus();
   });
 
-  fetch("data/catalogo-publico.json", {cache: "no-store"})
-    .then(response => {
-      if (!response.ok) throw new Error("HTTP " + response.status);
+  // Os resumos de obras já publicadas são indexados separadamente para
+  // manter a pesquisa estável mesmo durante atualizações automáticas do catálogo.
+  Promise.all([
+    fetch("data/catalogo-publico.json", {cache: "no-store"}).then(response => {
+      if (!response.ok) throw new Error("Catálogo indisponível (HTTP " + response.status + ")");
       return response.json();
-    })
-    .then(data => {
+    }),
+    fetch("data/resumos-publicos.json", {cache: "no-store"})
+      .then(response => response.ok ? response.json() : {resumos:{}})
+      .catch(() => ({resumos:{}}))
+  ])
+    .then(([data, resumosData]) => {
+      const resumos = resumosData && resumosData.resumos && typeof resumosData.resumos === "object"
+        ? resumosData.resumos : {};
       if (!data || !Array.isArray(data.registros)) throw new Error("Formato de catálogo inválido");
       records = data.registros.filter(r => r && r.titulo && r.id)
         .map(r => ({
           id: String(r.id), titulo: String(r.titulo), categoria: String(r.categoria || ""),
           curso: String(r.curso || ""), ano: String(r.ano || ""),
           evento: String(r.evento || ""), palavrasChave: String(r.palavrasChave || ""),
-          pdf: String(r.pdf || "")
+          resumo: String(r.resumo || resumos[r.id] || ""), pdf: String(r.pdf || "")
         })).sort((a, b) => Number(b.ano) - Number(a.ano) || a.titulo.localeCompare(b.titulo, "pt-BR"));
       adicionarFiltro(filters.categoria, records.map(r => r.categoria));
       adicionarFiltro(filters.curso, records.map(r => r.curso));
