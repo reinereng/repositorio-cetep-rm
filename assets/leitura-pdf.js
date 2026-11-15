@@ -32,12 +32,12 @@
   if (aiReady) {
     aiBtn.disabled = false;
     aiConsentBox.hidden = false;
-    aiDesc.textContent = "Para usar GPT, marque a autorização acima. Trechos de texto serão analisados pela API da OpenAI; a conferência dos campos permanece obrigatória.";
+    aiDesc.textContent = "A análise com GPT é opcional e só acontece após sua autorização. Confira todas as informações sugeridas.";
   } else {
     aiBtn.hidden = true;
     aiBtn.disabled = true;
     aiConsentBox.hidden = true;
-    aiDesc.textContent = "A identificação de campos funciona no próprio navegador, sem enviar o texto do PDF a um serviço externo. Arquivos digitalizados como imagem podem não conter texto reconhecível.";
+    aiDesc.textContent = "A leitura automática não utiliza IA. Se o PDF for uma imagem digitalizada, poderá ser necessário preencher os campos manualmente.";
   }
   function setStatus(message) { status.textContent = message; }
   function setOrigem(message) { if (origem) origem.textContent = message; }
@@ -45,7 +45,7 @@
     textExtracted = ""; current = {};
     suggestions.hidden = true;
     list.replaceChildren();
-    setOrigem("Leitura local PDF.js (sem IA, sem custo).");
+    setOrigem("Leitura automática (sem IA e sem custo).");
     setStatus("PDF selecionado. Clique em “Identificar pelo PDF (sem IA)”.");
   }
   pdfInput.addEventListener("change", resetReading);
@@ -58,7 +58,7 @@
     }
     const signature = new TextDecoder().decode(await file.slice(0,5).arrayBuffer());
     if (signature !== "%PDF-") throw new Error("Esse arquivo não apresenta a assinatura de um PDF válido.");
-    setOrigem("Leitura local PDF.js iniciada — nenhuma chamada à IA.");
+    setOrigem("Leitura automática iniciada — sem utilização de IA.");
     setStatus("Lendo até cinco páginas do PDF no navegador…");
     const pdfjs = await import(pdfjsSrc);
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
@@ -207,8 +207,8 @@
     localBtn.disabled=true;
     try {
       const res=await extract();textExtracted=res.all;
-      setOrigem("PDF.js · leitura local de "+res.readPages+" página(s), sem GPT e sem consumo de tokens.");
-      show(guess(res.all,res.pages),"PDF.js (sem IA)");
+      setOrigem("Leitura automática · "+res.readPages+" página(s), sem GPT e sem consumo de tokens.");
+      show(guess(res.all,res.pages),"Leitura automática (sem IA)");
     }catch(err){setStatus(err.message||"Não foi possível ler o PDF.");}
     finally{localBtn.disabled=false;}
   });
