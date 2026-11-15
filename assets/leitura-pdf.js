@@ -19,7 +19,7 @@
   const aiReady = config.iaMetadadosAtiva === true && /^https:\/\/script\.google\.com\//.test(backendUrl);
   let textExtracted = "", current = {};
   const fields = {
-    titulo: "Título", autores: "Autores", orientador: "Nome do(a) orientador(a)",
+    titulo: "Título", autores: "Autores", orientador: "Orientador(a)", coorientador: "Co-orientador(a)",
     resumo: "Resumo", palavrasChave: "Palavras-chave", ano: "Ano",
     curso: "Curso/Área", categoria: "Categoria", evento: "Feira/Evento"
   };
@@ -150,6 +150,7 @@
     out.titulo=guessTitle(header,pages);
     out.autores=findLabel(header,/^(?:autor(?:es|a|as)?|alunos?|equipe|integrantes)\s*[:\-]\s*(.{4,300})$/i);
     out.orientador=findLabel(lines.slice(0,280),/^(?:orientador(?:a)?|professor(?:a)?\s+orientador(?:a)?)\s*[:\-]\s*(.{4,170})$/i);
+    out.coorientador=findLabel(lines.slice(0,280),/^(?:(?:co[ -]?orientador(?:a)?|professor(?:a)?\s+co[ -]?orientador(?:a)?|co[ -]?orienta[çc][ãa]o))\s*[:\-]\s*(.{4,195})$/i);
     out.resumo=guessSection(all,"RESUMO",/\n\s*(?:Palavras[ -]chave|Keywords|ABSTRACT|1\s*[.\-]?\s*INTRODU[ÇC][ÃA]O|INTRODU[ÇC][ÃA]O|LISTA DE|SUM[ÁA]RIO)\b/i,4000);
     if(out.resumo && out.resumo.length<90) out.resumo="";
     const kwMatch=all.match(/(?:Palavras[ -]chave|Descritores)\s*[:.\-]\s*([^\n]{5,400})/i);
@@ -211,7 +212,7 @@
       applied++;
     }
     suggestions.hidden=true;
-    setStatus(applied+" campo(s) preenchido(s). Confira as informações e conclua os campos restantes. O nome do(a) orientador(a) é obrigatório.");
+    setStatus(applied+" campo(s) preenchido(s). Confira as informações e conclua manualmente os campos restantes.");
     $("titulo")?.scrollIntoView({behavior:"smooth",block:"center"});
   });
 
