@@ -10,7 +10,7 @@ Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pag
 - `assets/busca.js`: pesquisa por título, palavras-chave, resumo, curso, ano e evento; resumos recolhidos em cada cartão.
 - `data/resumos-publicos.json`: resumos dos trabalhos já publicados, disponíveis para a busca (índice complementar).
 - `assets/submissao.js`: validação do formulário e envio POST para o Apps Script.
-- `assets/leitura-pdf.js`: identifica metadados lendo no máximo as cinco primeiras páginas do PDF no navegador, sem IA; informa claramente a origem e permite revisão antes do preenchimento.
+- `assets/leitura-pdf.js`: oferece um único botão de identificação, lê até cinco páginas localmente e chama IA automaticamente apenas se encontrar menos de quatro campos, preservando a revisão humana.
 - `apps-script/AnaliseMetadadosIA.gs`: integração opcional com a OpenAI Responses API (GPT-6 Luna), após autorização, configuração privada da chave e implantação.
 - [`apps-script/README-IA.md`](apps-script/README-IA.md): configuração da análise por IA e privacidade.
 - `apps-script/SubmissaoWeb.gs`: backend que grava PDF na triagem e acrescenta a linha na Planilha Mestre, incluindo o campo opcional de co-orientação em `SUBMISSOES!AC`.
@@ -19,7 +19,7 @@ Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pag
 - `assets/logo-cetep-rm-original.png`: imagem original do CETEP-RM, sem redesenho, cópia byte a byte do arquivo fornecido.
 
 ## Status da submissão própria
-O HTML está no GitHub. **Ainda precisa de implantação manual no Apps Script**; enquanto o campo `submissaoWebExec` estiver vazio em `assets/config.js`, o botão novo fica desativado e o formulário antigo permanece disponível. A integração nunca concede publicação automática.
+O frontend da submissão já aponta para a implantação institucional e-Nova. O código do Apps Script precisa estar atualizado e implantado na versão correspondente para que o envio e o complemento por IA funcionem. A aprovação de trabalhos continua sendo feita exclusivamente pela curadoria. O formulário alternativo permanece disponível.
 
 ## Como funciona a consulta
 A página carrega `data/catalogo-publico.json` no próprio domínio do site, processa os filtros localmente e apresenta cartões para cada trabalho. **Não abre a planilha.** Quando houver PDF autorizado, o cartão tem link direto ao documento no Drive.
@@ -27,13 +27,13 @@ A página carrega `data/catalogo-publico.json` no próprio domínio do site, pro
 A divulgação dos metadados NÃO altera permissões de arquivo: PDFs podem continuar exigindo acesso institucional e-Nova.
 
 ### Sincronização de novos trabalhos
-**Importante:** a catalogação pelo Google Apps Script continua independente. Neste momento, o índice JSON do GitHub **não é atualizado automaticamente** quando um novo trabalho for aprovado no Google Sheets.
+A rotina `SincronizarCatalogoGitHub.gs` atualiza o índice de trabalhos aprovados automaticamente quando o gatilho e o token GitHub estão configurados. Não atualiza documentos ainda em triagem.
 
 Para atualizar, use exclusivamente as linhas com status **Publicado** da planilha de consulta institucional (não a planilha mestre), selecione os campos públicos `id`, `titulo`, `categoria`, `evento`, `curso`, `ano`, `palavrasChave`, `pdf` e atualize `data/catalogo-publico.json`.
 
 Nunca inclua nomes de alunos, e-mails, identificadores pessoais, dados da triagem, arquivos internos ou documentos ainda não aprovados.
 
-**Próxima melhoria planejada:** sincronizar automaticamente esse índice público com o catálogo institucional por um serviço autenticado, sem publicar tokens/chaves no código do GitHub Pages.
+**Atualização administrativa:** após editar arquivos `.gs` no repositório, a versão correspondente também deve ser copiada para o projeto Apps Script. O aplicativo web precisa de nova implantação para receber alterações de `SubmissaoWeb.gs` ou `AnaliseMetadadosIA.gs`.
 
 ## Publicação
 Configurar em Settings → Pages → Deploy from a branch → `main` → `/(root)`.
