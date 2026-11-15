@@ -144,3 +144,32 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
 
 /* O atributo hidden precisa prevalecer sobre regras visuais de botões e labels. */
 [hidden]{display:none!important}
+
+
+/* Acervo: consulta deliberada, cartões compactos e 3 colunas no desktop. */
+.catalog-panel{padding:23px 25px}
+.catalog-controls{gap:12px}
+.catalog-field input,.catalog-field select{min-height:43px;font-size:.89rem}
+.catalog-heading{margin-bottom:15px}
+.catalog-heading h2{font-size:1.27rem}
+.catalog-actions{display:flex;align-items:center;gap:13px;margin-top:19px;flex-wrap:wrap}
+.catalog-search-button{min-width:158px;min-height:43px;padding:8px 20px}
+.catalog-results{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.catalog-card{padding:18px;border-radius:13px;box-shadow:0 6px 20px #153b6410}
+.catalog-card__title{font-size:.99rem;line-height:1.35;margin:13px 0 10px}
+.catalog-card__meta{font-size:.78rem;gap:5px 10px}
+.catalog-card__keywords{font-size:.78rem;line-height:1.45;margin:9px 0 12px}
+.catalog-card__footer{padding-top:12px;gap:8px}
+.catalog-id{font-size:.65rem}
+.catalog-document{padding:7px 11px;font-size:.78rem}
+.catalog-tag{font-size:.69rem;padding:3px 8px}
+.catalog-year{font-size:.76rem}
+.catalog-results-head{margin:15px 0 12px}
+.catalog-results-head p{font-size:.88rem}
+@media(max-width:1050px){.catalog-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  .catalog-results{grid-template-columns:1fr}
+  .catalog-panel{padding:20px 17px}
+  .catalog-search-button{width:100%}
+  .catalog-actions .subtle{font-size:.77rem}
+}
