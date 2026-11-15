@@ -6,7 +6,9 @@
  * CETEP_OPENAI_API_KEY = chave secreta da API OpenAI
  * CETEP_OPENAI_MODEL = gpt-6-luna (opcional)
  *
- * Invocação: doPost com acao=analisarIA. Exige conta e-Nova e consentimento.
+ * Invocação: doPost com acao=analisarIA. Exige conta e-Nova.
+ * A busca é iniciada voluntariamente na interface, com aviso prévio sobre IA;
+ * não existe caixa de autorização individual para a etapa complementar.
  * Não recebe PDF, não registra submissão e não publica trabalho.
  */
 const METADADOS_IA = Object.freeze({
@@ -34,8 +36,8 @@ function analisarMetadadosIA_(e) {
   const id = String(e && e.parameter && e.parameter.requisicaoId || '').trim();
   try {
     if (!/^[A-Za-z0-9_-]{16,80}$/.test(id)) throw new Error('Identificador da solicitação inválido.');
-    if (!e || !e.parameter || String(e.parameter.consentimento) !== 'sim') {
-      throw new Error('Autorize explicitamente a análise por IA antes de prosseguir.');
+    if (!e || !e.parameter || String(e.parameter.analiseAutomatica) !== 'sim') {
+      throw new Error('Solicitação de identificação complementar inválida.');
     }
     const email = String(Session.getActiveUser().getEmail() || '').trim().toLowerCase();
     if (!email || !email.endsWith('@' + METADADOS_IA.dominio)) {
