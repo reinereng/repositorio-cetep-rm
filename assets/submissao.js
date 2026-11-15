@@ -5,7 +5,16 @@
   const $ = id => document.getElementById(id);
   const cfg = window.CETEP_CONFIG || {};
   const endpoint = String(cfg.submissaoWebExec || "").trim();
-  const habilitado = /^https:\/\/script\.google\.com\/macros\/s\/[a-zA-Z0-9_-]+\/exec$/.test(endpoint);
+  const habilitado = (() => {
+    try {
+      const destino = new URL(endpoint);
+      // Aceita o formato padrão e o formato institucional e-Nova do Apps Script.
+      return destino.protocol === "https:" &&
+        destino.hostname === "script.google.com" &&
+        /^\/(?:macros\/s|a\/macros\/enova\.educacao\.ba\.gov\.br\/s)\/[A-Za-z0-9_-]+\/exec$/.test(destino.pathname) &&
+        !destino.search && !destino.hash;
+    } catch (_) { return false; }
+  })();
   const btn = $("enviar-trabalho"), info = $("aviso-integracao"), status = $("envio-status");
   const arquivo = $("arquivoPdf"), arquivoInfo = $("arquivo-info"), resumo = $("resumo");
   const maxBytes = (Number(cfg.limitePdfMB) || 6) * 1024 * 1024;
