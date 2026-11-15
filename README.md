@@ -5,11 +5,17 @@ Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pag
 ## Páginas
 - `index.html`: apresentação.
 - `consultar.html`: **pesquisa realizada dentro do próprio site**, com filtros por título, palavras-chave, categoria, curso, ano e evento.
-- `submeter.html`: acesso ao formulário de envio.
+- `submeter.html`: formulário próprio, responsivo, com PDF de até 6 MB e envio ao backend Apps Script depois de ativado.
 - `sobre.html`: apresentação institucional.
 - `assets/busca.js`: carregamento e filtragem do catálogo no navegador.
+- `assets/submissao.js`: validação do formulário e envio POST para o Apps Script.
+- `apps-script/SubmissaoWeb.gs`: backend que grava PDF na triagem e acrescenta a linha na Planilha Mestre.
+- [`apps-script/README.md`](apps-script/README.md): passos de implantação na conta e-Nova.
 - `data/catalogo-publico.json`: índice público **somente de metadados de trabalhos publicados e autorizados**.
 - `assets/logo-cetep-rm-original.png`: imagem original do CETEP-RM, sem redesenho, cópia byte a byte do arquivo fornecido.
+
+## Status da submissão própria
+O HTML está no GitHub. **Ainda precisa de implantação manual no Apps Script**; enquanto o campo `submissaoWebExec` estiver vazio em `assets/config.js`, o botão novo fica desativado e o formulário antigo permanece disponível. A integração nunca concede publicação automática.
 
 ## Como funciona a consulta
 A página carrega `data/catalogo-publico.json` no próprio domínio do site, processa os filtros localmente e apresenta cartões para cada trabalho. **Não abre a planilha.** Quando houver PDF autorizado, o cartão tem link direto ao documento no Drive.
