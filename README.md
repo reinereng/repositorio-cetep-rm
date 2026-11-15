@@ -49,6 +49,6 @@ GitHub Pages é público: qualquer pessoa pode examinar os arquivos HTML, CSS, J
 
 Os cursos aparecem em ordem alfabética no formulário: **Biocombustíveis, Eletrotécnica, Mecatrônica, Meio Ambiente, Química, Refrigeração, Segurança do Trabalho e Sistemas de Energia Renovável**.
 
-Eventos previstos: **FECITEC, AFROTEC, SEMATEC, Outro evento (campo aberto), Não se aplica**. A ausência de evento é padrão para TCC, mas banners devem informar o evento.
+Eventos previstos: **FECITESC, AFROTEP, SEMATEP, Outro evento (campo aberto), Não se aplica**. A ausência de evento é padrão para TCC, mas banners devem informar o evento.
 
 O módulo `assets/dicionarios.js` padroniza sugestões como `QUÍMICA` → `Química`. O backend `apps-script/SubmissaoWeb.gs` valida os cursos no recebimento; o sincronizador `apps-script/SincronizarCatalogoGitHub.gs` normaliza os cursos do índice público, inclusive variações históricas. Essas duas alterações ao Apps Script exigem que o responsável atualize os arquivos no projeto e, para o Web App de submissão, publique uma nova versão.
