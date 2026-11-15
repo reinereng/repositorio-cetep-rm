@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09264d"><meta name="description" content="Envie trabalhos pedagógicos e científicos para o repositório CETEP-RM."><title>Submeter trabalho | Repositório CETEP-RM</title><link rel="stylesheet" href="assets/style.css?v=20261115c"><link rel="icon" href="assets/logo-cetep-rm-original.png" type="image/png"></head><body><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09264d"><meta name="description" content="Envie trabalhos pedagógicos e científicos para o repositório CETEP-RM."><title>Submeter trabalho | Repositório CETEP-RM</title><link rel="stylesheet" href="assets/style.css?v=20261115-cinco-paginas"><link rel="icon" href="assets/logo-cetep-rm-original.png" type="image/png"></head><body><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
 <header class="header"><div class="container header-inner">
 <a class="brand" href="index.html" aria-label="Repositório Pedagógico e Científico do CETEP-RM">
 <img class="brand__logo" src="assets/logo-cetep-rm-original.png" alt="Logo oficial do CETEP-RM" width="74" height="74">
@@ -26,11 +26,11 @@ Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferi
   <div class="submission-assistant__top">
     <span class="submission-assistant__label">ASSISTENTE DE PREENCHIMENTO</span>
     <h2 id="assistente-titulo">Comece pelo PDF</h2>
-    <p>Selecione o documento e peça ao sistema para identificar as informações. Você poderá conferir e corrigir todas as sugestões antes de enviar.</p>
+    <p>O sistema lê até as <strong>5 primeiras páginas</strong> do PDF e sugere os campos encontrados. Revise todas as informações antes do envio.</p>
   </div>
   <div class="submission-upload"><label for="arquivoPdf">Selecionar PDF do trabalho <span aria-hidden="true">*</span></label><input id="arquivoPdf" type="file" accept=".pdf,application/pdf" required aria-describedby="ajuda-pdf"><p id="ajuda-pdf" class="subtle">O arquivo será encaminhado diretamente ao Google Drive institucional para triagem. Não será armazenado no GitHub.</p><p id="arquivo-info" class="submission-file-info" aria-live="polite">Nenhum arquivo selecionado.</p></div>
   <div class="submission-assistant__actions">
-    <button type="button" class="button button--blue" id="identificar-pdf">Identificar informações do PDF</button>
+    <button type="button" class="button button--blue" id="identificar-pdf">Identificar pelo PDF (sem IA)</button>
     <button type="button" class="button submission-assistant__ai" id="analisar-com-ia" disabled>Aprimorar com GPT</button>
   </div>
   <label class="submission-consent submission-consent--ia" id="consentimento-ia-box" hidden>
@@ -38,6 +38,7 @@ Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferi
     <span><strong>Autorização para análise com GPT:</strong> concordo que trechos do texto do PDF sejam enviados ao serviço de IA da OpenAI configurado pelo CETEP-RM exclusivamente para sugerir os campos do formulário. Nenhum trabalho será publicado por essa análise.</span>
   </label>
   <p id="ia-explicacao" class="subtle">A identificação inicial funciona no próprio navegador. A análise por modelo de IA requer configuração adicional e autorização para o processamento do texto.</p>
+  <p id="origem-extracao" class="submission-assistant__method" aria-live="polite"><strong>Identificação local (PDF.js)</strong> — sem inteligência artificial e sem consumo de créditos.</p>
   <p id="extracao-status" class="submission-assistant__status" role="status" aria-live="polite">Nenhuma leitura iniciada.</p>
   <section id="revisao-sugestoes" class="submission-suggestions" hidden aria-labelledby="titulo-sugestoes">
     <h3 id="titulo-sugestoes">Confira as informações encontradas</h3>
@@ -81,4 +82,4 @@ Preencha os campos para enviar seu trabalho à curadoria do CETEP-RM. Se preferi
 </form>
 <div class="submission-bottom"><strong>Outra opção de envio:</strong> caso prefira ou encontre dificuldades com este formulário, você também pode utilizar o formulário do Google. <a href="https://forms.gle/a8Pf7tfMcteJvhjP8" data-form-url target="_blank" rel="noopener noreferrer">Abrir formulário do Google</a>.</div>
 </div></section></main><footer class="footer"><div class="container footer-inner"><span>CETEP-RM · Repositório Pedagógico e Científico</span><span>Documentos disponíveis conforme as permissões do domínio e-Nova.</span></div></footer>
-<script src="assets/config.js"></script><script src="assets/app.js"></script><script src="assets/submissao.js?v=20261115-coorientador" defer></script><script type="module" src="assets/leitura-pdf.js?v=20261115-coorientador"></script></body></html>
+<script src="assets/config.js"></script><script src="assets/app.js"></script><script src="assets/submissao.js?v=20261115-coorientador" defer></script><script type="module" src="assets/leitura-pdf.js?v=20261115-cinco-paginas"></script></body></html>
