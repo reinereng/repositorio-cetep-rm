@@ -27,8 +27,9 @@ A API OpenAI **é cobrada por tokens**. Créditos existentes na conta da API sã
 5. Atualize **somente `SubmissaoWeb.gs`** com o arquivo do repositório, se ainda não tiver a rota `acao=analisarIA` no `doPost`. **Não substitua `Code.gs`, `ConsultaWeb.gs` nem o sincronizador GitHub.**
 6. Execute `verificarConfiguracaoIA`. A função só verifica a presença e o formato da configuração; **não consome créditos**.
 7. Em **Implantar > Gerenciar implantações**, edite a implantação existente e selecione **Nova versão**. Preserve o acesso restrito à organização e-Nova.
-8. Para teste, use primeiro um PDF fictício, sem dados pessoais. Somente depois de confirmar a autorização institucional e a funcionalidade do backend, altere no arquivo `assets/config.js`: `iaMetadadosAtiva: true`.
-9. Faça o teste completo de **Aprimorar com GPT**. O sistema envia texto extraído e limitado do PDF **apenas após consentimento**, e devolve sugestões para revisão; não registra nem publica trabalho por essa ação.
+8. Após confirmar a autorização institucional e configurar o backend, altere em `assets/config.js`: `iaMetadadosAtiva: true`. Isso revela o botão **Aprimorar com GPT**, mas **não inicia nenhuma chamada à API automaticamente**.
+9. Faça primeiro um teste com PDF fictício, sem dados pessoais. Clique **Identificar informações do PDF**, marque o consentimento e então **Aprimorar com GPT**. Verifique os campos sugeridos e os registros de execução do Apps Script. Se houver falha, volte a flag para `false`.
+10. A análise envia texto limitado do PDF somente após consentimento e devolve sugestões para revisão; não registra nem publica trabalho por essa ação.
 
 ### Privacidade e segurança
 
