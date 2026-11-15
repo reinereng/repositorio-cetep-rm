@@ -172,8 +172,8 @@
     out.ano=years?.length?years[years.length-1]:"";
     if(/trabalho de conclus[aã]o|tcc/i.test(norm(all.slice(0,14000))))out.categoria="Trabalho de Conclusão de Curso (TCC)";
     else if(pages.length===1||/banner cient[ií]fico/i.test(all))out.categoria="Banner de pesquisa";
-    const event=all.slice(0,15000).match(/\b(FECITEC|FECITESC|CEMATEP|FECIBA)\b/i);
-    out.evento=event?event[1].toUpperCase():"";
+    const event=all.slice(0,15000).match(/\b(FECITESC|FECITEC|AFROTEP|AFROTEC|SEMATEP|SEMATEC|CEMATEP|FECIBA)\b/i);
+    out.evento=event ? (window.CETEP_DICIONARIOS?.normalizarEvento(event[1]) || event[1].toUpperCase()) : "";
     return Object.fromEntries(Object.entries(out).filter(([key,val])=>!!clean(val) && Object.hasOwn(fields,key)));
   }
 
@@ -183,7 +183,8 @@
     let count=0;
     for (const [key,label] of Object.entries(fields)) {
       const raw=clean(data[key]);
-      const val=key==="curso" ? (window.CETEP_DICIONARIOS?.normalizarCurso(raw) || "") : raw;
+      const val=key==="curso" ? (window.CETEP_DICIONARIOS?.normalizarCurso(raw) || "")
+        : key==="evento" ? (window.CETEP_DICIONARIOS?.normalizarEvento(raw) || raw) : raw;
       current[key]=val;
       if(!val)continue;
       count++;
