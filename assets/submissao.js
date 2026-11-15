@@ -62,6 +62,14 @@
     event.preventDefault();
     if (!habilitado || enviando) return;
     if (!form.reportValidity()) return;
+    const orientadorInput = $("orientador");
+    const nomeOrientador = String(orientadorInput?.value || "").trim();
+    if (nomeOrientador.length < 5 ||
+        /^(?:n[ãa]o informado|n[ãa]o identificado|sem orientador|a definir|n\/?a|nenhum|desconhecido)$/i.test(nomeOrientador)) {
+      status.textContent = "Informe o nome completo do(a) orientador(a) antes de enviar o trabalho.";
+      orientadorInput?.focus();
+      return;
+    }
     const file = arquivo.files && arquivo.files[0];
     if (!file) { status.textContent = "Selecione o PDF antes de enviar."; arquivo.focus(); return; }
     if (file.size <= 0 || file.size > maxBytes || !/\.pdf$/i.test(file.name)) {
