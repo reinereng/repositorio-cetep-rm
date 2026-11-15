@@ -8,7 +8,8 @@ window.CETEP_CONFIG = Object.freeze({
   // Nunca insira credenciais nem tokens neste arquivo público.
   submissaoWebExec: "https://script.google.com/a/macros/enova.educacao.ba.gov.br/s/AKfycbxV-5h0bbdy1EiDS5XTBEtK_VTxx0yRSx1eP59uISRUiBeTxSTmyizvKWAAtAi8tdF34Q/exec",
   limitePdfMB: 6,
-  // Ativar apenas após instalar AnaliseMetadadosIA.gs, salvar a chave no Apps Script,
-  // reimplantar SubmissaoWeb.gs e testar com a conta institucional.
-  iaMetadadosAtiva: false
+  // A pesquisa poderá complementar automaticamente campos ausentes via IA.
+  // A credencial fica exclusivamente nas propriedades do Apps Script.
+  // O backend somente atende quando configurado; em falha, permanece o preenchimento manual.
+  iaMetadadosAtiva: true
 });
