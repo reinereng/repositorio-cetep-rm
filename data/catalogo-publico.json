@@ -4,14 +4,14 @@
   "origem": "Catálogo institucional — registros publicados",
   "registros": [
     {
-      "id": "CETEPRM-TCC-2026-0001",
-      "titulo": "DESENVOLVIMENTO E AVALIAÇÃO DE GIZES DE CERA À BASE DE CERAS E PIGMENTOS NATURAIS",
-      "categoria": "Trabalho de Conclusão de Curso (TCC)",
-      "evento": "",
+      "id": "CETEPRM-BANNER-2026-0001",
+      "titulo": "Paracetamol: Dos neurotransmissores à contaminação dos recursos hídricos",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
       "curso": "Química",
       "ano": "2026",
-      "palavrasChave": "ceras naturais; cera de abelha; cera de carnaúba; pigmentos naturais; giz comercial.",
-      "pdf": "https://drive.google.com/file/d/1CW1oGLx1_cWuTQHjMmzqoyRbDFBHnU30/view?usp=drivesdk"
+      "palavrasChave": "Paracetamol",
+      "pdf": "https://drive.google.com/file/d/1zTRcZEAnfC5NQqXr-jb9WD4-iu8Hej5r/view?usp=drivesdk"
     },
     {
       "id": "CETEPRM-TCC-2025-0001",
@@ -22,6 +22,16 @@
       "ano": "2025",
       "palavrasChave": "fenantrolina, Espectrometria colorimetria, Pigmento Inteligente",
       "pdf": "https://drive.google.com/file/d/1rjhhn8Gol34QF5VUTtm50HgDfIQGLaKP/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-TCC-2026-0001",
+      "titulo": "DESENVOLVIMENTO E AVALIAÇÃO DE GIZES DE CERA À BASE DE CERAS E PIGMENTOS NATURAIS",
+      "categoria": "Trabalho de Conclusão de Curso (TCC)",
+      "evento": "",
+      "curso": "Química",
+      "ano": "2026",
+      "palavrasChave": "ceras naturais; cera de abelha; cera de carnaúba; pigmentos naturais; giz comercial.",
+      "pdf": "https://drive.google.com/file/d/1CW1oGLx1_cWuTQHjMmzqoyRbDFBHnU30/view?usp=drivesdk"
     }
   ]
 }
