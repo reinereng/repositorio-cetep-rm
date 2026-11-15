@@ -60,3 +60,16 @@ A sincronização não modifica PDFs, não altera permissões de Drive, não apr
 Para desligar as atualizações automáticas, execute `removerGatilhoCatalogoGitHub` ou revogue o token no GitHub. Ao expirar o token, será necessário substituí-lo nas Propriedades do Script.
 
 **Atenção:** o GitHub Pages é público. A sincronização deve ser usada somente se todos os registros de `ACERVO_INSTITUCIONAL` forem autorizados para divulgação dos metadados. Não coloque nessa aba materiais confidenciais ou ainda pendentes.
+
+
+## Campo opcional de co-orientação
+
+A página `submeter.html` contém agora **Co-orientador(a)**, independente do orientador principal. O campo é opcional para TCCs e banners.
+
+A Planilha Mestre possui a coluna **`SUBMISSOES!AC` (coluna 29)**, intitulada `Co-orientador(a)`. A versão atualizada de `SubmissaoWeb.gs` registra o valor diretamente nela, sem alterar a estrutura das 17 colunas originais do formulário nem os processos de aprovação, Drive e consulta.
+
+**Para colocar a nova versão em produção:** atualize o arquivo `SubmissaoWeb.gs` no mesmo projeto Apps Script da Planilha Mestre e, em **Implantar > Gerenciar implantações > Editar > Nova versão**, atualize a implantação existente. A atualização do GitHub, sozinha, não atualiza o código dentro do Apps Script.
+
+**Quando adicionar a pergunta ao Google Forms:** inclua-a preferencialmente no final, com o título `Nome do(a) co-orientador(a)`, opcional. O script localiza a coluna pela expressão `co-orientador` ou `coorientador`, sem depender da posição. Execute uma vez `instalarGatilhoCoorientadorFormulario`; esse gatilho separado copiará o campo dos envios feitos pelo Google Forms para `SUBMISSOES!AC`. Ele não reinstala nem substitui os outros gatilhos.
+
+O acervo público e o JSON do GitHub **não expõem automaticamente nomes de orientadores ou co-orientadores**; este campo é cadastrado somente na Planilha Mestre. Para publicá-lo na pesquisa, será necessária uma decisão posterior sobre o catálogo de divulgação.
