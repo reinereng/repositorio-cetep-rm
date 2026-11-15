@@ -1,52 +1,45 @@
-/* CETEP-RM: extração local de texto do PDF + revisão humana.
- * A leitura inicial usa PDF.js no navegador; não envia o PDF ao serviço de IA.
- * A análise opcional por modelo exige consentimento e backend do Apps Script.
+/* CETEP-RM — leitura de PDF e preenchimento assistido.
+ * O usuário inicia uma identificação. A leitura local precede qualquer chamada externa.
+ * Somente se houver até 4 campos identificados E a integração estiver habilitada,
+ * é solicitada autorização explícita para análise complementar com IA.
  */
 (() => {
   "use strict";
   const $ = id => document.getElementById(id);
-  const pdfInput = $("arquivoPdf"), localBtn = $("identificar-pdf"), aiBtn = $("analisar-com-ia");
+  const pdfInput = $("arquivoPdf"), localBtn = $("identificar-pdf");
   if (!pdfInput || !localBtn) return;
   const status = $("extracao-status"), suggestions = $("revisao-sugestoes");
   const list = $("lista-sugestoes"), apply = $("aplicar-sugestoes");
-  const aiConsent = $("consentimento-ia"), aiConsentBox = $("consentimento-ia-box");
-  const aiDesc = $("ia-explicacao");
-  const origem = $("origem-extracao");
   const config = window.CETEP_CONFIG || {};
   const limitBytes = (Number(config.limitePdfMB) || 6) * 1024 * 1024;
-  const maxPages = 5;
-  const aiMaxChars = 12000;
+  const maxPages = 5, aiMaxChars = 12000, lowConfidenceLimit = 4;
   const pdfjsSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.5.438/pdf.min.mjs";
   const workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.5.438/pdf.worker.min.mjs";
   const backendUrl = String(config.submissaoWebExec || "");
-  const aiReady = config.iaMetadadosAtiva === true && /^https:\/\/script\.google\.com\//.test(backendUrl);
-  let textExtracted = "", current = {};
+  const aiReady = config.iaMetadadosAtiva === true &&
+    /^https:\/\/script\.google\.com\//.test(backendUrl);
+  let textExtracted = "", localFound = {}, current = {}, pending = null;
   const fields = {
-    titulo: "Título", autores: "Autores", orientador: "Orientador(a)", coorientador: "Co-orientador(a)",
-    resumo: "Resumo", palavrasChave: "Palavras-chave", ano: "Ano",
-    curso: "Curso/Área", categoria: "Categoria", evento: "Feira/Evento"
+    titulo:"Título", autores:"Autores", orientador:"Orientador(a)",
+    coorientador:"Co-orientador(a)", resumo:"Resumo", palavrasChave:"Palavras-chave",
+    ano:"Ano", curso:"Curso/Área", categoria:"Categoria", evento:"Feira/Evento"
   };
-  const clean = s => String(s || "").replace(/\s+/g, " ").trim();
-  const norm = s => clean(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-  if (aiReady) {
-    aiBtn.disabled = false;
-    aiConsentBox.hidden = false;
-    aiDesc.textContent = "A análise com GPT é opcional e só acontece após sua autorização. Confira todas as informações sugeridas.";
-  } else {
-    aiBtn.hidden = true;
-    aiBtn.disabled = true;
-    aiConsentBox.hidden = true;
-    aiDesc.textContent = "A leitura automática não utiliza IA. Se o PDF for uma imagem digitalizada, poderá ser necessário preencher os campos manualmente.";
-  }
+  const clean = s => String(s || "").replace(/\s+/g," ").trim();
+  const norm = s => clean(s).normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"").toLowerCase();
   function setStatus(message) { status.textContent = message; }
-  function setOrigem(message) { if (origem) origem.textContent = message; }
+
   function resetReading() {
-    textExtracted = ""; current = {};
+    if (pending) {
+      clearTimeout(pending.timeout);
+      pending.iframe.remove();
+      pending = null;
+    }
+    textExtracted = ""; localFound = {}; current = {};
     suggestions.hidden = true;
     list.replaceChildren();
-    setOrigem("Leitura automática (sem IA e sem custo).");
-    setStatus("PDF selecionado. Clique em “Identificar pelo PDF (sem IA)”.");
+    localBtn.disabled = false;
+    setStatus("PDF selecionado. Clique em Pesquisar no PDF para identificar informações.");
   }
   pdfInput.addEventListener("change", resetReading);
 
@@ -58,8 +51,7 @@
     }
     const signature = new TextDecoder().decode(await file.slice(0,5).arrayBuffer());
     if (signature !== "%PDF-") throw new Error("Esse arquivo não apresenta a assinatura de um PDF válido.");
-    setOrigem("Leitura automática iniciada — sem utilização de IA.");
-    setStatus("Lendo até cinco páginas do PDF no navegador…");
+    setStatus("Analisando as primeiras páginas do documento…");
     const pdfjs = await import(pdfjsSrc);
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
     const task = pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
@@ -101,6 +93,7 @@
       }
     }
   }
+
 
   function findLabel(lines, regex) {
     for (const line of lines) {
@@ -177,7 +170,8 @@
     return Object.fromEntries(Object.entries(out).filter(([key,val])=>!!clean(val) && Object.hasOwn(fields,key)));
   }
 
-  function show(data,source) {
+
+  function show(data) {
     current=data;
     list.replaceChildren();
     let count=0;
@@ -198,20 +192,42 @@
       body.append(strong,preview);row.append(check,body);list.append(row);
     }
     suggestions.hidden=count===0;
-    if(count) setStatus(source+": "+count+" campo(s) identificado(s). Revise as sugestões antes de aplicar.");
-    else setStatus("Nenhum campo confiável foi identificado. Você pode preencher o formulário manualmente.");
+    if(count) setStatus(count+" informação(ões) encontrada(s). Confira as sugestões antes de aplicar.");
+    else setStatus("Não foi possível identificar informações suficientes. Preencha os campos manualmente.");
+    return count;
   }
 
-  localBtn.addEventListener("click",async()=>{
-    if(!pdfInput.files?.length){setStatus("Selecione o PDF antes de iniciar.");pdfInput.focus();return;}
-    localBtn.disabled=true;
+
+  localBtn.addEventListener("click", async () => {
+    const file = pdfInput.files?.[0];
+    if (!file) { setStatus("Selecione o PDF antes de pesquisar."); pdfInput.focus(); return; }
+    if (pending) return;
+    localBtn.disabled = true;
     try {
-      const res=await extract();textExtracted=res.all;
-      setOrigem("Leitura automática · "+res.readPages+" página(s), sem GPT e sem consumo de tokens.");
-      show(guess(res.all,res.pages),"Leitura automática (sem IA)");
-    }catch(err){setStatus(err.message||"Não foi possível ler o PDF.");}
-    finally{localBtn.disabled=false;}
+      const result = await extract();
+      if (pdfInput.files?.[0] !== file) return;
+      textExtracted = result.all;
+      localFound = guess(result.all, result.pages);
+      const foundCount = show(localFound);
+      if (aiReady && foundCount <= lowConfidenceLimit && textExtracted.length >= 120) {
+        const autorizado = window.confirm(
+          "Foram identificadas poucas informações neste documento. " +
+          "Autoriza uma análise complementar por inteligência artificial? " +
+          "Trechos do texto podem conter nomes e serão enviados a um serviço externo apenas " +
+          "para sugerir o preenchimento. Você poderá revisar tudo antes do envio."
+        );
+        if (autorizado) {
+          solicitarComplementoIA();
+          return;
+        }
+      }
+    } catch (error) {
+      setStatus(error.message || "Não foi possível ler o arquivo. Preencha manualmente.");
+    } finally {
+      if (!pending) localBtn.disabled = false;
+    }
   });
+
   apply.addEventListener("click",()=>{
     let applied=0;
     for(const checkbox of list.querySelectorAll("input[type=checkbox]:checked")){
@@ -233,57 +249,95 @@
     $("titulo")?.scrollIntoView({behavior:"smooth",block:"center"});
   });
 
-  // A análise com IA envia APENAS trechos textuais, após autorização expressa.
-  // Usa POST de formulário para iframe: Apps Script não oferece CORS padrão.
-  let pending=null;
-  window.addEventListener("message",event=>{
-    if(!pending)return;
-    const host=(()=>{try{return new URL(event.origin).hostname;}catch(_){return "";}})();
-    if(host!=="script.google.com" && host!=="script.googleusercontent.com" && !host.endsWith(".script.googleusercontent.com") && !host.endsWith(".googleusercontent.com"))return;
-    const msg=event.data;
-    if(!msg || msg.tipo!=="CETEP_IA_METADADOS" || msg.requisicaoId!==pending.id)return;
-    clearTimeout(pending.timeout);pending.iframe.remove();pending=null;aiBtn.disabled=false;
-    if(msg.ok && msg.sugestoes && typeof msg.sugestoes==="object"){
-      const uso=msg.consumo||{};
-      const total=Number(uso.total)||0;
-      const entrada=Number(uso.entrada)||0;
-      const saida=Number(uso.saida)||0;
-      setOrigem("GPT (OpenAI) · "+String(msg.modelo||"modelo configurado")+
-        " · análise concluída"+(total>0
-          ? " · tokens usados: "+total.toLocaleString("pt-BR")+
-            " (entrada "+entrada.toLocaleString("pt-BR")+
-            ", saída "+saida.toLocaleString("pt-BR")+")"
-          : " · a API não informou a contagem de tokens")+".");
-      show(Object.fromEntries(Object.entries(msg.sugestoes).filter(([k])=>Object.hasOwn(fields,k))),"GPT (OpenAI)");
-    }else{setOrigem("GPT não concluído. Nenhuma confirmação de processamento foi recebida.");setStatus("A análise com GPT não foi concluída: "+String(msg.erro||"verifique a configuração do serviço"));}
+
+  // A análise complementar somente é solicitada após autorização explícita.
+  // O formulário HTML faz POST ao aplicativo web sem expor a credencial de API.
+  function limparPendente() {
+    if (!pending) return;
+    clearTimeout(pending.timeout);
+    pending.iframe.remove();
+    pending = null;
+    localBtn.disabled = false;
+  }
+
+  window.addEventListener("message", event => {
+    if (!pending) return;
+    const host = (() => {try {return new URL(event.origin).hostname;} catch (_) {return "";} })();
+    const googleOrigin = host === "script.google.com" ||
+      host === "script.googleusercontent.com" ||
+      host.endsWith(".script.googleusercontent.com") ||
+      host.endsWith(".googleusercontent.com");
+    if (!googleOrigin) return;
+    const msg = event.data;
+    if (!msg || msg.tipo !== "CETEP_IA_METADADOS" || msg.requisicaoId !== pending.id) return;
+    limparPendente();
+    if (msg.ok && msg.sugestoes && typeof msg.sugestoes === "object") {
+      // A IA complementa dados não identificados. Correções de curso/evento
+      // serão normalizadas ao renderizar as sugestões.
+      const merged = {...localFound};
+      for (const key of Object.keys(fields)) {
+        const suggestion = clean(msg.sugestoes[key]);
+        if (suggestion) merged[key] = suggestion;
+      }
+      show(merged);
+      setStatus("A identificação foi concluída. Revise e selecione os dados que deseja preencher.");
+      if (msg.consumo) {
+        // Informações técnicas ficam no log para conferência, nunca na tela pública.
+        console.info("CETEP-RM: identificação complementar concluída", {
+          totalTokens: Number(msg.consumo.total)||0
+        });
+      }
+    } else {
+      show(localFound);
+      setStatus("Não foi possível complementar os dados. Revise as sugestões e preencha o restante manualmente.");
+    }
   });
 
-  aiBtn.addEventListener("click",async()=>{
-    if(!aiReady)return;
-    if(!aiConsent.checked){setStatus("Marque a autorização para enviar o texto extraído ao serviço de IA.");aiConsent.focus();return;}
-    if(!textExtracted){setStatus("Primeiro clique em “Identificar informações do PDF”.");return;}
-    if(pending){setStatus("Já existe uma análise em andamento.");return;}
-    const id=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
-    const iframe=document.createElement("iframe");iframe.name="ia_recebe_"+id.replace(/[^a-zA-Z0-9_]/g,"");
-    iframe.hidden=true;iframe.setAttribute("title","Resposta da análise institucional por IA");document.body.append(iframe);
-    const post=document.createElement("form");post.method="POST";post.action=backendUrl;post.target=iframe.name;
-    const values={
-      acao:"analisarIA", requisicaoId:id, consentimento:"sim",
-      // Nunca envie o PDF ao modelo: apenas texto limitado e sem e-mails/telefones.
-      textoPDF:textExtracted.slice(0,aiMaxChars).replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]").replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g,"[documento omitido]")
-    };
-    for(const [name,value] of Object.entries(values)){
-      const hidden=document.createElement("input");hidden.type="hidden";hidden.name=name;hidden.value=value;post.append(hidden);
+  function solicitarComplementoIA() {
+    if (!aiReady || !textExtracted || pending) return;
+    const id = crypto.randomUUID ?
+      crypto.randomUUID() : Date.now().toString(36)+"_"+Math.random().toString(36).slice(2)+"_ref";
+    let iframe, post;
+    try {
+      iframe = document.createElement("iframe");
+      iframe.name = "metadados_"+id.replace(/[^a-zA-Z0-9_]/g,"");
+      iframe.hidden = true;
+      iframe.title = "Análise complementar do documento";
+      document.body.append(iframe);
+      post = document.createElement("form");
+      post.method = "POST";
+      post.action = backendUrl;
+      post.target = iframe.name;
+      const parameters = {
+        acao:"analisarIA",
+        requisicaoId:id,
+        consentimento:"sim",
+        // Limite de tamanho. PDFs e e-mails/CPFs não são enviados ao modelo.
+        textoPDF:textExtracted.slice(0,aiMaxChars)
+          .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]")
+          .replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g,"[documento omitido]")
+      };
+      for (const [name,value] of Object.entries(parameters)) {
+        const h = document.createElement("input");
+        h.type = "hidden"; h.name = name; h.value = value; post.append(h);
+      }
+      document.body.append(post);
+      setStatus("Buscando informações complementares no documento…");
+      const timeout = setTimeout(() => {
+        if (!pending || pending.id !== id) return;
+        limparPendente();
+        show(localFound);
+        setStatus("Não foi possível concluir a identificação. Confira as sugestões ou preencha os campos manualmente.");
+      },65000);
+      pending = {id,iframe,timeout};
+      post.submit();
+    } catch (err) {
+      limparPendente();
+      if (iframe) iframe.remove();
+      show(localFound);
+      setStatus("Não foi possível complementar as sugestões. Você pode preencher os campos manualmente.");
+    } finally {
+      if (post) post.remove();
     }
-    document.body.append(post);aiBtn.disabled=true;
-    setOrigem("Solicitação enviada ao GPT (OpenAI); aguardando resposta. O consumo ainda não foi confirmado.");
-    setStatus("Analisando os campos com GPT. Aguarde a resposta institucional…");
-    const timeout=setTimeout(()=>{
-      if(!pending || pending.id!==id)return;
-      pending.iframe.remove();pending=null;aiBtn.disabled=false;
-      setStatus("A análise não respondeu. Use as sugestões da leitura local ou preencha manualmente.");
-    },65000);
-    pending={id,iframe,timeout};
-    post.submit();post.remove();
-  });
+  }
 })();
