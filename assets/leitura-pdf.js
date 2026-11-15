@@ -110,10 +110,17 @@
         if(nx.length<10 || exclude.test(nx) || nl.length<10 || nu.length/nl.length<.68 || candidate.length+nx.length>245) break;
         candidate+=" "+nx;
       }
-      if(candidate.length>30 && candidate.length<250)blocks.push(candidate);
+      if(candidate.length>30 && candidate.length<250){
+        const cues = /\b(?:DESENVOLVIMENTO|AVALIA[ÇC][ÃA]O|AN[ÁA]LISE|PRODU[ÇC][ÃA]O|IMPORT[ÂA]NCIA|EXTRA[ÇC][ÃA]O|TRATAMENTO|ESTUDO|PESQUISA|CARACTERIZA[ÇC][ÃA]O|ELABORA[ÇC][ÃA]O|UTILIZA[ÇC][ÃA]O|APLICA[ÇC][ÃA]O|QUALIDADE|DETERMINA[ÇC][ÃA]O|BIOPL[ÁA]STICO|BIODIESEL|AMBIENTAL|HORTA|POLUI[ÇC][ÃA]O|GIZ(?:ES)?|CERA)\b/i;
+        const words=line.split(/\s+/).length;
+        // Linhas curtas em caixa-alta no começo costumam ser nomes dos autores.
+        const maybeName=words>=2 && words<=6 && line.length<65 && !cues.test(line);
+        const score=candidate.length+(cues.test(candidate)?140:0)-(maybeName?260:0);
+        blocks.push({value:candidate,score});
+      }
     }
-    blocks.sort((a,b)=>b.length-a.length);
-    return blocks[0]||"";
+    blocks.sort((a,b)=>b.score-a.score);
+    return blocks[0]?.value||"";
   }
   function guessSection(all, name, ending, maxLength) {
     const escaped = name.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\$&");
