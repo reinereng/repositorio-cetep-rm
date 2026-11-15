@@ -77,6 +77,8 @@ function analisarMetadadosIA_(e) {
       'A categoria deve ser exatamente "Trabalho de Conclusão de Curso (TCC)" ou "Banner de pesquisa",',
       'somente quando identificada com clareza.',
       'O ano deve conter exatamente quatro dígitos. Quando incerto, deixe vazio.',
+      'Nomes oficiais dos eventos da escola: FECITESC, AFROTEP e SEMATEP.',
+      'Se aparecerem grafias antigas FECITEC, AFROTEC ou SEMATEC, retorne o respectivo nome oficial.',
       'Limites de caracteres: titulo=250, autores=1200, orientador=200, coorientador=200, resumo=4000,',
       'palavrasChave=400, ano=4, curso=120, categoria=70, evento=160.',
       'Cada campo será revisado por uma pessoa antes do envio; priorize precisão sobre completude.'
