@@ -74,8 +74,15 @@ function sincronizarCatalogoGitHub() {
     if (esperado.some((v,i) => valores[0][i] !== v)) {
       throw new Error('Estrutura da planilha mudou. Sincronização suspensa.');
     }
-    const normalizarEvento = v => /^n[aã]o se aplica!?$/i.test(String(v || '').trim())
-      ? '' : String(v || '').trim();
+    const normalizarEvento = v => {
+      const raw = String(v || '').trim();
+      if (/^n[aã]o se aplica!?$/i.test(raw)) return '';
+      const chave = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+      const alias = {'FECITEC':'FECITESC', 'FECITESC':'FECITESC',
+        'AFROTEC':'AFROTEP', 'AFROTEP':'AFROTEP',
+        'SEMATEC':'SEMATEP', 'SEMATEP':'SEMATEP'};
+      return alias[chave] || raw;
+    };
     const mapa = {};
     for (let i=1; i<valores.length; i++) {
       const r = valores[i];
