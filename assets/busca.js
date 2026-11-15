@@ -81,6 +81,15 @@
 
   function aplicarFiltros() {
     const q = normalizar(filters.busca.value);
+    const ativo = q.length > 0 || ["categoria", "curso", "ano", "evento"]
+      .some(key => Boolean(filters[key].value));
+    // Jamais liste o acervo inteiro quando nenhum critério foi informado.
+    if (!ativo) {
+      box.replaceChildren();
+      summary.textContent = "Digite um termo ou escolha um filtro e clique em Pesquisar.";
+      box.setAttribute("aria-busy", "false");
+      return;
+    }
     const matches = records.filter(r => {
       const corpus = normalizar([r.titulo, r.palavrasChave, r.curso, r.categoria, r.evento, r.ano].join(" "));
       return (!q || q.split(/\s+/).every(word => corpus.includes(word))) &&
@@ -105,11 +114,16 @@
     box.setAttribute("aria-busy", "false");
   }
 
-  $("form-busca").addEventListener("submit", event => event.preventDefault());
-  Object.values(filters).forEach(input => input.addEventListener(input.tagName === "INPUT" ? "input" : "change", aplicarFiltros));
+  // Busca deliberada: botão Pesquisar ou tecla Enter.
+  $("form-busca").addEventListener("submit", event => {
+    event.preventDefault();
+    aplicarFiltros();
+  });
   clear.addEventListener("click", () => {
     $("form-busca").reset();
-    aplicarFiltros();
+    box.replaceChildren();
+    summary.textContent = "Filtros limpos. Informe um termo ou escolha um filtro para pesquisar.";
+    box.setAttribute("aria-busy", "false");
     filters.busca.focus();
   });
 
@@ -131,8 +145,12 @@
       adicionarFiltro(filters.curso, records.map(r => r.curso));
       adicionarFiltro(filters.ano, records.map(r => r.ano), "", (a,b) => Number(b) - Number(a));
       adicionarFiltro(filters.evento, records.map(r => r.evento));
-      allCount.textContent = records.length + (records.length === 1 ? " trabalho publicado" : " trabalhos publicados");
-      aplicarFiltros();
+      allCount.textContent = records.length + (records.length === 1 ? " trabalho no acervo" : " trabalhos no acervo");
+      summary.textContent = records.length ?
+        "Digite um termo ou escolha um filtro e clique em Pesquisar." :
+        "Nenhum trabalho publicado no índice.";
+      box.replaceChildren();
+      box.setAttribute("aria-busy", "false");
     })
     .catch(error => {
       box.setAttribute("aria-busy", "false");
