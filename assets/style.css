@@ -54,3 +54,14 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
 /* Logo oficial: arquivo original, sem recorte ou redesenho */
 .brand__logo{width:74px;height:74px;max-width:none;flex:0 0 74px;object-fit:contain;padding:4px;border:1px solid #dae5ed;border-radius:50%;background:#fff}
 @media(max-width:600px){.brand__logo{width:56px;height:56px;flex-basis:56px;padding:3px}.header-inner{min-height:76px}}
+
+/* Ajuste de legibilidade da marca oficial sem alterar o PNG original. */
+.header-inner{min-height:104px}
+.brand__logo{width:100px;height:100px;flex:0 0 100px;border:0;border-radius:0;padding:0;object-fit:contain;background:transparent}
+.brand__name{font-size:1.06rem}
+@media(max-width:600px){
+  .header-inner{min-height:79px}
+  .brand__logo{width:74px;height:74px;flex:0 0 74px;padding:0}
+  .brand__name{font-size:.88rem}
+  .brand__sub{font-size:.65rem}
+}
