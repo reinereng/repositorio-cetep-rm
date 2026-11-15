@@ -11,8 +11,11 @@
   const list = $("lista-sugestoes"), apply = $("aplicar-sugestoes");
   const aiConsent = $("consentimento-ia"), aiConsentBox = $("consentimento-ia-box");
   const aiDesc = $("ia-explicacao");
+  const origem = $("origem-extracao");
   const config = window.CETEP_CONFIG || {};
   const limitBytes = (Number(config.limitePdfMB) || 6) * 1024 * 1024;
+  const maxPages = 5;
+  const aiMaxChars = 12000;
   const pdfjsSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.5.438/pdf.min.mjs";
   const workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.5.438/pdf.worker.min.mjs";
   const backendUrl = String(config.submissaoWebExec || "");
@@ -37,11 +40,13 @@
     aiDesc.textContent = "A identificação de campos funciona no próprio navegador, sem enviar o texto do PDF a um serviço externo. Arquivos digitalizados como imagem podem não conter texto reconhecível.";
   }
   function setStatus(message) { status.textContent = message; }
+  function setOrigem(message) { if (origem) origem.textContent = message; }
   function resetReading() {
     textExtracted = ""; current = {};
     suggestions.hidden = true;
     list.replaceChildren();
-    setStatus("PDF selecionado. Clique em “Identificar informações do PDF”.");
+    setOrigem("Leitura local PDF.js (sem IA, sem custo).");
+    setStatus("PDF selecionado. Clique em “Identificar pelo PDF (sem IA)”.");
   }
   pdfInput.addEventListener("change", resetReading);
 
@@ -53,13 +58,14 @@
     }
     const signature = new TextDecoder().decode(await file.slice(0,5).arrayBuffer());
     if (signature !== "%PDF-") throw new Error("Esse arquivo não apresenta a assinatura de um PDF válido.");
-    setStatus("Lendo as primeiras páginas do PDF no navegador…");
+    setOrigem("Leitura local PDF.js iniciada — nenhuma chamada à IA.");
+    setStatus("Lendo até cinco páginas do PDF no navegador…");
     const pdfjs = await import(pdfjsSrc);
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
     const task = pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
     const pdf = await task.promise;
     try {
-      const total = Math.min(pdf.numPages, 12);
+      const total = Math.min(pdf.numPages, maxPages);
       const texts = [];
       for (let n = 1; n <= total; n++) {
         const page = await pdf.getPage(n);
@@ -83,7 +89,7 @@
       if (all.replace(/\s/g,"").length < 100) {
         throw new Error("Não consegui extrair texto suficiente. O arquivo pode estar digitalizado como imagem; preencha manualmente.");
       }
-      return {all, pages:texts, count: pdf.numPages};
+      return {all, pages:texts, count: pdf.numPages, readPages: total};
     } finally {
       // O PDF.js expõe destroy() na tarefa de carregamento; algumas builds
       // não o expõem no proxy do documento. Falha no cleanup não invalida a leitura.
@@ -176,7 +182,9 @@
     list.replaceChildren();
     let count=0;
     for (const [key,label] of Object.entries(fields)) {
-      const val=clean(data[key]);
+      const raw=clean(data[key]);
+      const val=key==="curso" ? (window.CETEP_DICIONARIOS?.normalizarCurso(raw) || "") : raw;
+      current[key]=val;
       if(!val)continue;
       count++;
       const row=document.createElement("label");row.className="submission-suggestion";
@@ -198,7 +206,8 @@
     localBtn.disabled=true;
     try {
       const res=await extract();textExtracted=res.all;
-      show(guess(res.all,res.pages),"Leitura local");
+      setOrigem("PDF.js · leitura local de "+res.readPages+" página(s), sem GPT e sem consumo de tokens.");
+      show(guess(res.all,res.pages),"PDF.js (sem IA)");
     }catch(err){setStatus(err.message||"Não foi possível ler o PDF.");}
     finally{localBtn.disabled=false;}
   });
@@ -207,6 +216,13 @@
     for(const checkbox of list.querySelectorAll("input[type=checkbox]:checked")){
       const key=checkbox.dataset.key,input=$(key),value=current[key];
       if(!input || !value)continue;
+      if(key==="evento") {
+        const valid=[...input.options].some(o=>o.value===value);
+        if(!valid){ input.value="__outros__"; $("eventoOutro").value=value; }
+        else input.value=value;
+        input.dispatchEvent(new Event("change",{bubbles:true}));
+        applied++; continue;
+      }
       if(input.tagName==="SELECT" && ![...input.options].some(o=>o.value===value))continue;
       input.value=value;input.dispatchEvent(new Event("input",{bubbles:true}));input.dispatchEvent(new Event("change",{bubbles:true}));
       applied++;
@@ -227,8 +243,9 @@
     if(!msg || msg.tipo!=="CETEP_IA_METADADOS" || msg.requisicaoId!==pending.id)return;
     clearTimeout(pending.timeout);pending.iframe.remove();pending=null;aiBtn.disabled=false;
     if(msg.ok && msg.sugestoes && typeof msg.sugestoes==="object"){
-      show(Object.fromEntries(Object.entries(msg.sugestoes).filter(([k])=>Object.hasOwn(fields,k))),"Análise por IA");
-    }else{setStatus("A análise com GPT não foi concluída: "+String(msg.erro||"verifique a configuração do serviço"));}
+      setOrigem("GPT (OpenAI) · análise concluída pelo serviço institucional; houve uso de API.");
+      show(Object.fromEntries(Object.entries(msg.sugestoes).filter(([k])=>Object.hasOwn(fields,k))),"GPT (OpenAI)");
+    }else{setOrigem("GPT não concluído. Nenhuma confirmação de processamento foi recebida.");setStatus("A análise com GPT não foi concluída: "+String(msg.erro||"verifique a configuração do serviço"));}
   });
 
   aiBtn.addEventListener("click",async()=>{
@@ -243,12 +260,13 @@
     const values={
       acao:"analisarIA", requisicaoId:id, consentimento:"sim",
       // Nunca envie o PDF ao modelo: apenas texto limitado e sem e-mails/telefones.
-      textoPDF:textExtracted.slice(0,18000).replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]").replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g,"[documento omitido]")
+      textoPDF:textExtracted.slice(0,aiMaxChars).replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]").replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g,"[documento omitido]")
     };
     for(const [name,value] of Object.entries(values)){
       const hidden=document.createElement("input");hidden.type="hidden";hidden.name=name;hidden.value=value;post.append(hidden);
     }
     document.body.append(post);aiBtn.disabled=true;
+    setOrigem("Solicitação enviada ao GPT (OpenAI); aguardando resposta. O consumo ainda não foi confirmado.");
     setStatus("Analisando os campos com GPT. Aguarde a resposta institucional…");
     const timeout=setTimeout(()=>{
       if(!pending || pending.id!==id)return;
