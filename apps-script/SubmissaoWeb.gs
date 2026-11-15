@@ -81,7 +81,16 @@ function receberSubmissaoWeb_(e) {
                    resumo:4000,palavrasChave:400};
   const d = {};
   obrig.forEach(k => { d[k] = campo(k, limites[k]); });
-  d.evento = String(dados.evento || '').trim().slice(0,160) || 'Não se aplica!';
+  // Grava sempre a grafia institucional, mesmo quando o PDF trouxe "QUÍMICA".
+  d.curso = cursoPadronizadoSubmissao_(d.curso);
+  if (!d.curso) throw new Error('Selecione um curso válido na lista institucional.');
+  const eventoInformado = String(dados.evento || '').trim().slice(0,160);
+  const eventoChave = eventoInformado.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+  d.evento = ['FECITEC','AFROTEC','SEMATEC'].indexOf(eventoChave) >= 0
+    ? eventoChave : eventoInformado || 'Não se aplica!';
+  if (d.categoria === 'Banner de pesquisa' && d.evento === 'Não se aplica!') {
+    throw new Error('Informe a feira ou evento para banners de pesquisa.');
+  }
   d.complemento = String(dados.complemento || '').trim().slice(0,1000);
   // Campo independente, opcional: preserva a coluna "Orientador" existente.
   d.coorientador = String(dados.coorientador || '').trim();
@@ -206,6 +215,27 @@ function instalarGatilhoCoorientadorFormulario() {
   const ss = SpreadsheetApp.openById(CFG.planilhaMestre);
   ScriptApp.newTrigger('registrarCoorientadorFormulario').forSpreadsheet(ss).onFormSubmit().create();
   Logger.log('Gatilho de co-orientação instalado sem modificar os anteriores.');
+}
+
+/** Mapeia grafias equivalentes para a lista de cursos do portal. */
+function cursoPadronizadoSubmissao_(valor) {
+  const txt = String(valor || '').normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const cursos = {
+    'biocombustivel':'Biocombustíveis',
+    'biocombustiveis':'Biocombustíveis',
+    'eletrotecnica':'Eletrotécnica',
+    'mecatronica':'Mecatrônica',
+    'meio ambiente':'Meio Ambiente',
+    'quimica':'Química',
+    'refrigeracao':'Refrigeração',
+    'refrigeracao e climatizacao':'Refrigeração',
+    'seguranca do trabalho':'Segurança do Trabalho',
+    'sistemas renovaveis':'Sistemas de Energia Renovável',
+    'sistemas de energias renovaveis':'Sistemas de Energia Renovável',
+    'sistemas de energia renovavel':'Sistemas de Energia Renovável'
+  };
+  return cursos[txt] || '';
 }
 
 function contextoEnvioWeb_() {
