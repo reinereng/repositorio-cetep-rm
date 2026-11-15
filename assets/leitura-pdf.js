@@ -243,7 +243,16 @@
     if(!msg || msg.tipo!=="CETEP_IA_METADADOS" || msg.requisicaoId!==pending.id)return;
     clearTimeout(pending.timeout);pending.iframe.remove();pending=null;aiBtn.disabled=false;
     if(msg.ok && msg.sugestoes && typeof msg.sugestoes==="object"){
-      setOrigem("GPT (OpenAI) · análise concluída pelo serviço institucional; houve uso de API.");
+      const uso=msg.consumo||{};
+      const total=Number(uso.total)||0;
+      const entrada=Number(uso.entrada)||0;
+      const saida=Number(uso.saida)||0;
+      setOrigem("GPT (OpenAI) · "+String(msg.modelo||"modelo configurado")+
+        " · análise concluída"+(total>0
+          ? " · tokens usados: "+total.toLocaleString("pt-BR")+
+            " (entrada "+entrada.toLocaleString("pt-BR")+
+            ", saída "+saida.toLocaleString("pt-BR")+")"
+          : " · a API não informou a contagem de tokens")+".");
       show(Object.fromEntries(Object.entries(msg.sugestoes).filter(([k])=>Object.hasOwn(fields,k))),"GPT (OpenAI)");
     }else{setOrigem("GPT não concluído. Nenhuma confirmação de processamento foi recebida.");setStatus("A análise com GPT não foi concluída: "+String(msg.erro||"verifique a configuração do serviço"));}
   });
