@@ -9,6 +9,9 @@ Portal responsivo do CETEP-RM em HTML, CSS e JavaScript, hospedado no GitHub Pag
 - `sobre.html`: apresentação institucional.
 - `assets/busca.js`: carregamento e filtragem do catálogo no navegador.
 - `assets/submissao.js`: validação do formulário e envio POST para o Apps Script.
+- `assets/leitura-pdf.js`: identifica título, orientador, resumo e outros metadados na leitura local do PDF; permite revisar antes de preencher.
+- `apps-script/AnaliseMetadadosIA.gs`: integração opcional com Gemini, após autorização e implantação.
+- [`apps-script/README-IA.md`](apps-script/README-IA.md): configuração da análise por IA e privacidade.
 - `apps-script/SubmissaoWeb.gs`: backend que grava PDF na triagem e acrescenta a linha na Planilha Mestre.
 - [`apps-script/README.md`](apps-script/README.md): passos de implantação na conta e-Nova.
 - `data/catalogo-publico.json`: índice público **somente de metadados de trabalhos publicados e autorizados**.
