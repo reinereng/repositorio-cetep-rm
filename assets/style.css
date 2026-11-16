@@ -245,14 +245,9 @@ a{color:var(--blue)}img{max-width:100%;display:block}button,input{font:inherit}a
   .brand__name{font-size:.83rem}
   .brand__sub{font-size:.60rem;line-height:1.22;margin-top:4px}
   .menu-button{padding:8px 11px;font-size:.83rem;flex:0 0 auto}
-  .hero-banner__actions{padding:22px 0}
+  .hero-banner__actions{padding:15px 0}
   .hero-banner__actions-inner{display:block}
-  .hero-banner__mobile-copy{
-    position:static;width:auto;height:auto;margin:0 0 16px;padding:0;
-    overflow:visible;clip:auto;white-space:normal;border:0;
-  }
-  .hero-banner__mobile-copy h1{font-size:clamp(1.15rem,5.2vw,1.6rem);line-height:1.2;margin:0 0 7px;color:#fff}
-  .hero-banner__mobile-copy p{font-size:.88rem;line-height:1.5;color:#e6f3ff;margin:0}
+  /* Título e descrição já estão dentro do banner: manter cópia apenas para leitores de tela. */
   .hero-banner__buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .hero-banner__buttons .button{width:100%;padding:9px 7px;font-size:.82rem;text-align:center}
 }
