@@ -71,6 +71,16 @@
     }
     return s;
   }
+  function selecionarTextoParaIA(texto) {
+    // Conserva abertura/título e prioriza o resumo mesmo quando ele aparecer
+    // depois de capas, dedicatórias ou sumário, dentro das cinco páginas lidas.
+    if (texto.length <= aiMaxChars) return texto;
+    const head = texto.slice(0,6500);
+    const m = /(?:^|\n)\s*RESUMO\s*[:.\n]/im.exec(texto);
+    const part = m ? texto.slice(m.index, m.index+3600) : "";
+    const ending = texto.slice(-1550);
+    return [head, part, ending].filter(Boolean).join("\n\n[...]\n\n").slice(0,aiMaxChars);
+  }
   function setStatus(message) { status.textContent = message; }
 
   function resetReading() {
@@ -391,7 +401,7 @@
         pistasLocais:JSON.stringify(pistas),
         imagemPaginaBase64:imagePreview,
         // Somente texto extraível; PDF completo, e-mail e CPF não seguem à IA.
-        textoPDF:textExtracted.slice(0,aiMaxChars)
+        textoPDF:selecionarTextoParaIA(textExtracted)
           .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]")
           .replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g,"[documento omitido]")
           .replace(/\b\d{11}\b/g,"[documento omitido]")
