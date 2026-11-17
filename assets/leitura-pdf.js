@@ -19,7 +19,7 @@
   const backendUrl = String(config.submissaoWebExec || "");
   const aiReady = config.iaMetadadosAtiva === true &&
     /^https:\/\/script\.google\.com\//.test(backendUrl);
-  let textExtracted = "", localFound = {}, current = {}, pending = null;
+  let textExtracted = "", imagePreview = "", localFound = {}, current = {}, pending = null;
   const fields = {
     titulo:"Título", autores:"Autores", orientador:"Orientador(a)",
     coorientador:"Co-orientador(a)", resumo:"Resumo", palavrasChave:"Palavras-chave",
@@ -79,7 +79,7 @@
       pending.iframe.remove();
       pending = null;
     }
-    textExtracted = ""; localFound = {}; current = {};
+    textExtracted = ""; imagePreview = ""; localFound = {}; current = {};
     apply.disabled = false;
     suggestions.hidden = true;
     list.replaceChildren();
@@ -123,10 +123,34 @@
         if (texts.join("").length > 75000) break;
       }
       const all = texts.join("\n\n");
-      if (all.replace(/\s/g,"").length < 100) {
-        throw new Error("Não consegui extrair texto suficiente. O arquivo pode estar digitalizado como imagem; preencha manualmente.");
+      let image = "";
+      // Banners de uma página e PDFs com texto escasso: a disposição visual
+      // ajuda a IA a distinguir título, autoria, orientação e conteúdo.
+      if (aiReady && (pdf.numPages === 1 || all.replace(/\s/g,"").length < 300)) {
+        try {
+          const firstPage = await pdf.getPage(1);
+          const natural = firstPage.getViewport({scale:1});
+          const scale = Math.min(2, 1450 / Math.max(natural.width,natural.height));
+          const viewport = firstPage.getViewport({scale});
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1,Math.round(viewport.width));
+          canvas.height = Math.max(1,Math.round(viewport.height));
+          const ctx = canvas.getContext("2d",{alpha:false});
+          if (ctx) {
+            await firstPage.render({canvasContext:ctx,viewport}).promise;
+            image = canvas.toDataURL("image/jpeg",0.68).split(",")[1] || "";
+            // Impede solicitações muito grandes ao Apps Script.
+            if (image.length > 1250000) image = "";
+          }
+          canvas.width=0;canvas.height=0;
+        } catch (imageError) {
+          console.warn("CETEP-RM: prévia visual indisponível",imageError);
+        }
       }
-      return {all, pages:texts, count: pdf.numPages, readPages: total};
+      if (all.replace(/\s/g,"").length < 100 && !image) {
+        throw new Error("O PDF não contém texto legível suficiente. Se for digitalizado como imagem, preencha os campos manualmente.");
+      }
+      return {all, pages:texts, count: pdf.numPages, readPages: total, image};
     } finally {
       // O PDF.js expõe destroy() na tarefa de carregamento; algumas builds
       // não o expõem no proxy do documento. Falha no cleanup não invalida a leitura.
@@ -252,12 +276,13 @@
       const result = await extract();
       if (pdfInput.files?.[0] !== file) return;
       textExtracted = result.all;
+      imagePreview = result.image || "";
       localFound = guess(result.all, result.pages);
       show(localFound);
       // Para qualquer PDF com texto extraível: leitura local primeiro,
       // depois revisão dos campos encontrados e sugestão dos ausentes pela IA.
       // A etapa de IA nunca preenche o formulário sem conferência humana.
-      if (aiReady && textExtracted.length >= 120) {
+      if (aiReady && (textExtracted.length >= 120 || imagePreview)) {
         apply.disabled = true;
         setStatus("Leitura inicial concluída. Conferindo os dados e buscando sugestões adicionais…");
         solicitarComplementoIA();
@@ -340,7 +365,7 @@
   });
 
   function solicitarComplementoIA() {
-    if (!aiReady || !textExtracted || pending) return;
+    if (!aiReady || (!textExtracted && !imagePreview) || pending) return;
     const id = crypto.randomUUID ?
       crypto.randomUUID() : Date.now().toString(36)+"_"+Math.random().toString(36).slice(2)+"_ref";
     let iframe, post;
@@ -364,6 +389,7 @@
         requisicaoId:id,
         analiseAutomatica:"sim",
         pistasLocais:JSON.stringify(pistas),
+        imagemPaginaBase64:imagePreview,
         // Somente texto extraível; PDF completo, e-mail e CPF não seguem à IA.
         textoPDF:textExtracted.slice(0,aiMaxChars)
           .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]")
@@ -387,6 +413,7 @@
     } catch (err) {
       limparPendente();
       if (iframe) iframe.remove();
+      apply.disabled = false;
       show(localFound);
       setStatus("Não foi possível complementar as sugestões. Você pode preencher os campos manualmente.");
     } finally {
