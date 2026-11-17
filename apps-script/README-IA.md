@@ -1,50 +1,44 @@
-# CETEP-RM — Identificação automática de dados do PDF
+# CETEP-RM — Leitura do PDF e revisão de metadados por IA
 
-## Funcionamento da interface
+## Experiência do professor
 
-Na página **Submeter trabalho**, o usuário vê apenas o botão **Pesquisar no PDF**.
+Há apenas um botão, **Pesquisar no PDF**. Ao acioná-lo:
 
-1. O navegador lê texto extraível de **até cinco páginas** do PDF, sem enviar o documento para IA.
-2. Se encontrar **cinco ou mais campos**, exibe as sugestões para conferência, sem gastar tokens.
-3. Se encontrar **menos de quatro campos** (zero a três) e a integração com OpenAI estiver habilitada, inicia automaticamente a análise complementar, sem pedir uma confirmação adicional. Um aviso claro sobre o possível processamento por IA aparece antes do botão Pesquisar no PDF.
-4. Quando o complemento for necessário, até **12.000 caracteres** do texto extraído podem ser enviados ao Apps Script, que chama a OpenAI e retorna apenas sugestões para campos ainda não identificados. Nada é publicado ou submetido automaticamente pela análise.
-5. Caso a integração esteja desativada, falhe, ou não haja texto extraível, o professor pode preencher o restante manualmente.
+1. O navegador utiliza PDF.js para ler o texto de até **cinco páginas** do PDF e localizar pistas sobre título, autores, orientador, co-orientador, resumo, palavras-chave, ano, curso, categoria e evento.
+2. Em **todas as pesquisas com texto extraível** e integração IA disponível, a OpenAI revê **também os campos já identificados**, e não somente os ausentes. As sugestões da IA fundamentadas no PDF prevalecem sobre os palpites locais; se a IA deixar um campo em branco, a pista local permanece para conferência.
+3. Para **banners de uma página** e arquivos com pouco texto extraível, o navegador pode gerar uma **prévia JPEG reduzida da primeira página** e enviá-la para análise visual juntamente com o texto, quando disponível. Isso permite apoiar o preenchimento mesmo quando a primeira página é composta principalmente de imagem. Não é OCR completo de todas as páginas.
+4. Títulos sugeridos são apresentados em escrita convencional, e nomes próprios são capitalizados adequadamente. A IA pode elaborar um **resumo fiel do conteúdo** e sugerir **palavras-chave** quando o PDF não trouxer esses elementos explicitamente. Nunca deve inventar autores, resultados, dados ou eventos.
+5. O professor **confere e seleciona** quais sugestões deseja aplicar. **Nada é submetido ou publicado automaticamente** pela análise. Os campos de identificação do **responsável pelo envio** (nome, e-mail e vínculo) nunca são gerados a partir do PDF ou preenchidos pela IA.
+6. Caso a IA esteja indisponível ou falhe, as informações extraídas localmente continuam disponíveis, e o preenchimento manual segue funcionando.
 
-**Importante:** o sistema não realiza OCR. PDFs digitalizados como imagem podem exigir preenchimento manual. A IA é uma ajuda, não uma validação da exatidão dos dados. Co-orientador é opcional; os demais campos seguem a validação do formulário.
+A consulta ao serviço de IA ocorre após a ação voluntária de clicar em Pesquisar no PDF e mediante o aviso de privacidade exibido no formulário. Não há uma segunda janela de confirmação.
 
-## Arquivos do Apps Script a manter atualizados
+## Arquitetura e dados
 
-O projeto Apps Script é aquele vinculado à **Planilha Mestre** da conta e-Nova.
+- Site público no GitHub Pages: `submeter.html`, `assets/leitura-pdf.js`, `assets/config.js`.
+- Backend privado: `SubmissaoWeb.gs` (rota `acao=analisarIA`) e `AnaliseMetadadosIA.gs` no projeto Apps Script vinculado à planilha mestre.
+- Dados enviados ao backend: texto extraído do PDF (até **12.000 caracteres**), pistas locais em JSON e, quando aplicável, a prévia JPEG (tamanho limitado). **O PDF completo não é enviado para a IA.**
+- Os campos de contato informados no formulário **não** são enviados à análise. O JavaScript mascara padrões comuns de e-mail e CPF encontrados no texto; nomes que estejam no próprio documento podem continuar presentes.
+- O backend exige autenticação institucional e-Nova, usa a OpenAI Responses API, `store:false` e esquema JSON estruturado. A chave fica somente nas propriedades privadas do Apps Script.
+- Limites e prevenção de abuso permanecem no backend. O complemento por IA é agora iniciado sempre que a busca tiver texto ou imagem suficientes, **sem limiar de quantidade de campos encontrados**.
 
-- [SubmissaoWeb.gs](SubmissaoWeb.gs): recebe o PDF, registra a submissão, valida cursos e eventos e armazena co-orientação em `SUBMISSOES!AC`; inclui a rota `acao=analisarIA`.
-- [AnaliseMetadadosIA.gs](AnaliseMetadadosIA.gs): análise complementar com a Responses API da OpenAI, integrada à rota anterior.
-- [SincronizarCatalogoGitHub.gs](SincronizarCatalogoGitHub.gs): sincroniza o catálogo aprovado, padroniza os eventos FECITESC, AFROTEP, SEMATEP e disponibiliza o resumo de obras publicadas para pesquisa.
+## Instalação da atualização
 
-**Não substituir** `Code.gs` (ou o código principal de curadoria), `ConsultaWeb.gs` e demais arquivos da automação existente.
+**O GitHub Pages foi atualizado, mas o projeto Apps Script não recebe alterações do GitHub automaticamente.** A chave da API já configurada permanece válida; **não** precisa recriá-la nem compartilhá-la.
 
-## Atualização passo a passo
+1. Na conta institucional e-Nova, abra a **Planilha Mestre → Extensões → Apps Script**.
+2. Atualize **somente o conteúdo de `AnaliseMetadadosIA.gs`** com a última versão do arquivo disponível neste repositório. Preserve `SubmissaoWeb.gs`, `Code.gs`, `ConsultaWeb.gs` e os demais scripts que já funcionam.
+3. Salve e confirme que `verificarConfiguracaoIA` reconhece a propriedade privada `CETEP_OPENAI_API_KEY`. O modelo padrão `gpt-6-luna` continua em uso, salvo configuração deliberada na propriedade `CETEP_OPENAI_MODEL`.
+4. Clique em **Implantar → Gerenciar implantações → Editar → Nova versão** para atualizar o aplicativo web **existente**, mantendo sua URL `/exec`, o domínio e-Nova e as permissões atuais.
+5. Teste com um **banner de PDF textual** e depois com um banner **de uma página composto por imagem**. Confira que título/autores são apresentados para revisão e que os campos do responsável continuam vazios.
+6. Se uma análise retornar erro, examine **Execuções** no Apps Script. O formulário continua permitindo preenchimento manual.
 
-1. Faça uma cópia de segurança do projeto ou dos três arquivos Apps Script que serão atualizados.
-2. Abra a **Planilha Mestre > Extensões > Apps Script**.
-3. No editor, substitua integralmente o conteúdo de `SubmissaoWeb.gs` pelo arquivo atualizado do GitHub.
-4. Substitua integralmente o conteúdo de `SincronizarCatalogoGitHub.gs` pela última versão do GitHub.
-5. Se o arquivo `AnaliseMetadadosIA.gs` não existir, crie-o em **+ > Script**. Se existir, substitua seu conteúdo pela versão atualizada do GitHub.
-6. Em **Configurações do projeto > Propriedades do script**, mantenha `CETEP_GITHUB_TOKEN` como já está. Para habilitar a IA, adicione `CETEP_OPENAI_API_KEY` com o valor de uma chave da API OpenAI de um projeto autorizado. Opcionalmente, use `CETEP_OPENAI_MODEL` com valor `gpt-6-luna`.
-7. Clique em **Salvar**. Execute `verificarSubmissaoWeb` e `verificarConfiguracaoIA` (a última só valida a chave; não consome tokens). Execute `sincronizarCatalogoGitHub` uma vez para testar o índice.
-8. Em **Implantar > Gerenciar implantações**, edite **a implantação web existente**, escolha **Nova versão** e confirme. Preserve o mesmo link `/exec`, acesso restrito à organização e-Nova e a configuração de execução que já funciona.
-9. Faça uma submissão de teste com PDF fictício e verifique o recebimento; depois teste a identificação de poucos campos com uma conta e-Nova.
-10. A configuração pública do GitHub já está com `iaMetadadosAtiva: true`. Assim que a implantação Apps Script atualizada estiver funcional, o complemento poderá ocorrer automaticamente nas buscas com menos de quatro campos. Em caso de erro, a leitura local e o preenchimento manual continuam disponíveis. Para suspender chamadas à API, altere a flag para `false`.
+**Não reinstale gatilhos da curadoria, não apague arquivos do Apps Script e não altere as fórmulas das planilhas.**
 
-**Não reinstale** o gatilho de sincronização dos 15 minutos nem o da curadoria. Se você já acrescentou a pergunta opcional sobre co-orientador ao Google Forms **e ainda não instalou** seu gatilho dedicado, execute `instalarGatilhoCoorientadorFormulario` uma única vez.
+## Privacidade e operação
 
-## Privacidade, segurança e consumo de API
-
-- A chave OpenAI deve ficar **somente nas propriedades privadas do Apps Script**, nunca no HTML, JS, planilha, GitHub ou conversa.
-- A leitura inicial é executada no navegador. A análise complementar, quando necessária e habilitada, pode enviar texto a um serviço externo automaticamente, após o usuário iniciar a busca com conhecimento do aviso na página. Isso não dispensa a verificação institucional de uma base legal adequada ao tratamento dos dados.
-- Antes de enviar, o JavaScript mascara e-mails e CPFs em formatos usuais. **Nomes de autores podem permanecer**: obtenha a autorização institucional necessária, especialmente se envolver menores de idade.
-- O Apps Script utiliza `store:false`; isso não elimina todas as questões de proteção de dados. Consulte as regras e o contrato de tratamento aplicáveis.
-- Há limite de texto (12 mil caracteres), de saída (`max_output_tokens`) e de frequência por usuário. Mesmo assim, chamadas efetivas à API geram custo segundo as tarifas e créditos da conta API.
-- A contagem de tokens retornada pela API é registrada nos logs da administração, não exibida na interface dos professores.
-- O formulário permanece plenamente utilizável manualmente caso a extração automática falhe.
-
-**Documentação oficial:** https://developers.openai.com/api/docs/models/gpt-6-luna e https://platform.openai.com/pricing/.
+- O aviso do formulário informa que trechos e eventualmente a prévia da primeira página poderão ser analisados por IA. Como os documentos podem conter nomes de estudantes, inclusive menores, é necessário que a instituição tenha uma base legal adequada e observe LGPD e políticas da rede.
+- `store:false` impede o armazenamento de respostas para reutilização na API conforme a configuração, mas não elimina todas as obrigações de proteção de dados.
+- O projeto Apps Script aplica limites de tamanho, autenticação e intervalo mínimo contra requisições repetidas.
+- O consumo da API é registrado em logs administrativos; não há exposição de chaves, custos ou detalhes técnicos ao usuário final.
+- Para suspender as chamadas de IA sem suspender a submissão, altere `iaMetadadosAtiva` para `false` em `assets/config.js`.
