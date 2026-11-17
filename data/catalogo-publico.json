@@ -1,44 +1,44 @@
 {
   "versao": 1,
-  "atualizadoEm": "2026-11-15",
+  "atualizadoEm": "2026-11-17",
   "origem": "Catálogo institucional — registros publicados",
   "registros": [
     {
       "id": "CETEPRM-BANNER-2026-0001",
-      "titulo": "Paracetamol: Dos neurotransmissores à contaminação dos recursos hídricos",
+      "titulo": "Paracetamol: dos neurotransmissores à contaminação dos recursos hídricos",
       "categoria": "Banner de pesquisa",
       "evento": "FECITESC",
       "curso": "Química",
       "ano": "2026",
       "resumo": "O paracetamol, também conhecido como acetaminofeno, é um analgésico amplamente utilizado que atua no sistema nervoso central por meio da regulação de neurotransmissores, como a serotonina, sendo eficaz no alívio da dor e da febre. Após o uso e o descarte inadequado, seus resíduos podem alcançar os corpos hídricos e não são totalmente removidos nas estações de tratamento, acumulando-se nos rios e afetando a fauna aquática. Estudos em bacias brasileiras mostram concentrações de até 190.000 ng/L em áreas poluídas, enquanto em rios urbanos variam entre 10 e 800 ng/L, influenciadas por períodos de seca ou chuva.",
-      "palavrasChave": "Paracetamol",
+      "palavrasChave": "paracetamol",
       "pdf": "https://drive.google.com/file/d/1zTRcZEAnfC5NQqXr-jb9WD4-iu8Hej5r/view?usp=drivesdk"
     },
     {
       "id": "CETEPRM-BANNER-2026-0002",
-      "titulo": "FOTOVOLTAICOS ORGÂNICOS: ENERGIA SOLAR ORGÂNICA PARA REGIÕES RURAIS DE MONTE GORDO INTEGRANTES",
+      "titulo": "Fotovoltaicos orgânicos: energia solar orgânica para regiões rurais de Monte Gordo integrantes",
       "categoria": "Banner de pesquisa",
       "evento": "FECITESC",
       "curso": "Química",
       "ano": "2026",
       "resumo": "O acesso à energia elétrica de qualidade ainda é um desafio nas áreas rurais de Monte Gordo, distrito de Camaçari (BA). As comunidades locais sofrem com oscilações e falta de infraestrutura básica, o que prejudica tarefas diárias como iluminação, conservação de alimentos. Aproveitando o alto potencial de irradiação solar da região, o projeto desenvolve células solares de baixo custo (DSSC) com corante natural de hibisco para levar energia limpa e acessível às comunidades rurais (para iluminação e recarga de eletrônicos).",
-      "palavrasChave": "Energia Solar, célula fotovoltaica",
+      "palavrasChave": "energia solar, célula fotovoltaica",
       "pdf": "https://drive.google.com/file/d/1NwFzB1sbcTb914l3EjKQY47a-zidu258/view?usp=drivesdk"
     },
     {
       "id": "CETEPRM-TCC-2025-0001",
-      "titulo": "DESENVOLVIMENTO DE PIGMENTO INTELIGENTE PARA DETECÇÃO DE Fe²⁺ NAS ÁGUAS DO RIO CAMACARI POR ESPECTOMETRIA COLORIMETRICA",
+      "titulo": "Desenvolvimento de pigmento inteligente para detecção de Fe²⁺ nas águas do Rio Camacari por espectometria colorimetrica",
       "categoria": "Trabalho de Conclusão de Curso (TCC)",
       "evento": "",
       "curso": "Química",
       "ano": "2025",
       "resumo": "A presença de ferro em águas naturais é um problema relevante para o meio ambiente e a saúde pública, já que concentrações elevadas podem alterar características físicas da água, reduzir o oxigênio dissolvido e favorecer o crescimento de microrganismos, comprometendo a biodiversidade. Na Bahia, estudos apontam que até 27% das amostras de poços apresentam teores acima do limite de 0,3 mg/L, devido a fatores naturais e antrópicos, como atividades industriais e condições físico-químicas da água. Nesse contexto, torna-se essencial o desenvolvimento de métodos confiáveis para monitorar o ferro. Uma alternativa promissora é o uso da 1,10-fenantrolina, reagente que forma com Fe²⁺ um complexo avermelhado mensurável por espectrofotometria UV-Vis em 510–520 nm. A pesquisa propôs aplicar essa metodologia para analisar amostras do Rio Camaçari, combinando análise qualitativa (mudança de cor) e quantitativa (absorbância). O delineamento incluiu coleta em pontos estratégicos, preparo das soluções, curva de calibração e aplicação em amostras reais. Apesar da ausência de resultados conclusivos devido ao tempo, espera-se que as concentrações de ferro ultrapassem o limite legal, reforçando a necessidade de fiscalização e remediação. Assim, o estudo evidencia a importância de métodos acessíveis para monitorar contaminantes metálicos e contribuir para a preservação dos recursos hídricos. A metodologia mostrou-se adequada e promissora, mas requer validação experimental e aplicação contínua para garantir resultados representativos e apoiar medidas de proteção ambiental e de saúde pública.",
-      "palavrasChave": "fenantrolina, Espectrometria colorimetria, Pigmento Inteligente",
+      "palavrasChave": "fenantrolina, espectrometria colorimetria, pigmento inteligente",
       "pdf": "https://drive.google.com/file/d/1rjhhn8Gol34QF5VUTtm50HgDfIQGLaKP/view?usp=drivesdk"
     },
     {
       "id": "CETEPRM-TCC-2026-0001",
-      "titulo": "DESENVOLVIMENTO E AVALIAÇÃO DE GIZES DE CERA À BASE DE CERAS E PIGMENTOS NATURAIS",
+      "titulo": "Desenvolvimento e avaliação de gizes de cera à base de ceras e pigmentos naturais",
       "categoria": "Trabalho de Conclusão de Curso (TCC)",
       "evento": "",
       "curso": "Química",
@@ -49,13 +49,13 @@
     },
     {
       "id": "CETEPRM-TCC-2026-0002",
-      "titulo": "DESENVOLVIMENTO DE EMBALAGENS ATIVAS À BASE DE AMIDO DE MANDIOCA E ADIÇÃO DE EXTRATO AQUOSO DE PRÓPOLIS COMO ALTERNATIVA ÀS EMBALAGENS CONVENCIONAIS FERNANDA ALVES DE OLIVEIRA",
+      "titulo": "Desenvolvimento de embalagens ativas à base de amido de mandioca e adição de extrato aquoso de própolis como alternativa às embalagens convencionais Fernanda Alves de Oliveira",
       "categoria": "Trabalho de Conclusão de Curso (TCC)",
       "evento": "",
       "curso": "Química",
       "ano": "2026",
       "resumo": "A alta demanda por alimentos nos últimos anos gerou graves problemas para a sociedade e o meio ambiente, como o aumento das embalagens plásticas e o curto prazo de validade desses alimentos. Diante disso, a busca por tecnologias que amenizem esse contexto é de grande relevância, como é o caso do desenvolvimento de embalagens ativas produzidas a partir de polímeros vegetais como o amido de mandioca, incorporados a agentes ativos. Dessa maneira, esse estudo tem como objetivo o desenvolvimento e caracterização de embalagens ativas à base de amido de mandioca, adicionado ao extrato aquoso de própolis, visando a conservação do morango. Os filmes foram elaborados a partir do amido de mandioca e incorporados a 0,4 mL, 1,2 mL e 2,0 mL de extrato aquoso de própolis, sendo confeccionados pela técnica de casting . A caracterização evidenciou diferenças na textura e na coloração das formulações, enquanto a aplicação dos morangos permitiu comparar seu aspecto visual durante o período experimental. Entre as formulações avaliadas, a de 1,2mL apresentou melhor desempenho visual dos frutos e características visuais mais satisfatórias entre os filmes. Portanto, os resultados indicam potencial de aplicação a embalagens ativas desenvolvidas no revestimento de morangos, sendo necessárias análises complementares para verificar sua eficácia na conservação de frutos.",
-      "palavrasChave": "Amido de mandioca, Extrato aquoso de própolis, Embalagens, Conservação",
+      "palavrasChave": "amido de mandioca, extrato aquoso de própolis, embalagens, conservação",
       "pdf": "https://drive.google.com/file/d/1tt4yswpbFAyGgi1Q90yyBz1SLpkBSn-I/view?usp=drivesdk"
     }
   ]
