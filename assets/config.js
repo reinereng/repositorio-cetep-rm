@@ -8,7 +8,7 @@ window.CETEP_CONFIG = Object.freeze({
   // Nunca insira credenciais nem tokens neste arquivo público.
   submissaoWebExec: "https://script.google.com/a/macros/enova.educacao.ba.gov.br/s/AKfycbxV-5h0bbdy1EiDS5XTBEtK_VTxx0yRSx1eP59uISRUiBeTxSTmyizvKWAAtAi8tdF34Q/exec",
   limitePdfMB: 6,
-  // A pesquisa poderá complementar automaticamente campos ausentes via IA.
+  // Após a leitura local, a IA pode revisar todos os campos do PDF e sugerir os ausentes.
   // A credencial fica exclusivamente nas propriedades do Apps Script.
   // O backend somente atende quando configurado; em falha, permanece o preenchimento manual.
   iaMetadadosAtiva: true
