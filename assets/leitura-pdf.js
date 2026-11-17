@@ -1,8 +1,8 @@
-/* CETEP-RM — leitura de PDF e preenchimento assistido.
- * O usuário inicia uma identificação. A leitura local precede qualquer chamada externa.
- * Se forem reconhecidos menos de 4 campos e o serviço estiver habilitado,
- * o complemento por IA é acionado sem janela de confirmação adicional.
- * O visitante é informado antes de iniciar a busca no próprio formulário.
+/* CETEP-RM — leitura do PDF, revisão assistida e sugestões de metadados.
+ * O leitor identifica pistas locais primeiro; se houver texto extraível e integração
+ * habilitada, a IA SEMPRE confere esses achados e sugere os demais campos.
+ * Nenhum campo do responsável pelo envio é inferido, preenchido ou enviado como pista.
+ * A pessoa confere e escolhe o que aplicar; não há submissão automática.
  */
 (() => {
   "use strict";
@@ -13,7 +13,7 @@
   const list = $("lista-sugestoes"), apply = $("aplicar-sugestoes");
   const config = window.CETEP_CONFIG || {};
   const limitBytes = (Number(config.limitePdfMB) || 6) * 1024 * 1024;
-  const maxPages = 5, aiMaxChars = 12000, lowConfidenceLimit = 4;
+  const maxPages = 5, aiMaxChars = 12000;
   const pdfjsSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.5.438/pdf.min.mjs";
   const workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.5.438/pdf.worker.min.mjs";
   const backendUrl = String(config.submissaoWebExec || "");
@@ -28,6 +28,49 @@
   const clean = s => String(s || "").replace(/\s+/g," ").trim();
   const norm = s => clean(s).normalize("NFD")
     .replace(/[\u0300-\u036f]/g,"").toLowerCase();
+
+  /* Capitalização editorial das sugestões; evita títulos inteiros em caixa alta. */
+  function textoEmCaixaAlta(raw) {
+    const chars = (clean(raw).match(/[A-Za-zÀ-ÿ]/g) || []);
+    return chars.length >= 8 &&
+      chars.filter(c => c === c.toLocaleUpperCase("pt-BR") &&
+        c !== c.toLocaleLowerCase("pt-BR")).length / chars.length >= .75;
+  }
+  function nomesProprios(s) {
+    return s
+      .replace(/camaçari/gi,"Camaçari")
+      .replace(/monte gordo/gi,"Monte Gordo")
+      .replace(/rio capivara/gi,"Rio Capivara")
+      .replace(/rio camaçari/gi,"Rio Camaçari")
+      .replace(/abrantes/gi,"Abrantes")
+      .replace(/tupinambás/gi,"Tupinambás")
+      .replace(/nordeste brasileiro/gi,"Nordeste brasileiro")
+      .replace(/cetep-rm/gi,"CETEP-RM")
+      .replace(/fecitesc/gi,"FECITESC")
+      .replace(/afrotep/gi,"AFROTEP")
+      .replace(/sematep/gi,"SEMATEP")
+      .replace(/uv-vis/gi,"UV-Vis")
+      .replace(/fe²⁺/gi,"Fe²⁺");
+  }
+  function padronizarCampo(key, value) {
+    const limites = {titulo:250,autores:1200,orientador:200,coorientador:200,
+      resumo:4000,palavrasChave:400,ano:4,curso:120,categoria:70,evento:160};
+    let s = clean(value).slice(0, limites[key] || 4000);
+    if (key === "titulo" && textoEmCaixaAlta(s)) {
+      s = s.toLocaleLowerCase("pt-BR")
+        .replace(/(^|[:.!?]\s+)([a-zà-ÿ])/giu, (_,pre,l) => pre+l.toLocaleUpperCase("pt-BR"));
+      return nomesProprios(s);
+    }
+    if (key === "palavrasChave" && textoEmCaixaAlta(s)) {
+      return nomesProprios(s.toLocaleLowerCase("pt-BR"));
+    }
+    if (["autores","orientador","coorientador"].includes(key) && textoEmCaixaAlta(s)) {
+      return s.toLocaleLowerCase("pt-BR").replace(/(^|[\s,;])([a-zà-ÿ]+)/giu, (_,sep,word) =>
+        sep && /^(de|da|do|das|dos|e)$/i.test(word) ? sep+word :
+        sep+word.charAt(0).toLocaleUpperCase("pt-BR")+word.slice(1));
+    }
+    return s;
+  }
   function setStatus(message) { status.textContent = message; }
 
   function resetReading() {
@@ -37,6 +80,7 @@
       pending = null;
     }
     textExtracted = ""; localFound = {}; current = {};
+    apply.disabled = false;
     suggestions.hidden = true;
     list.replaceChildren();
     localBtn.disabled = false;
@@ -177,7 +221,7 @@
     list.replaceChildren();
     let count=0;
     for (const [key,label] of Object.entries(fields)) {
-      const raw=clean(data[key]);
+      const raw=padronizarCampo(key,data[key]);
       const val=key==="curso" ? (window.CETEP_DICIONARIOS?.normalizarCurso(raw) || "")
         : key==="evento" ? (window.CETEP_DICIONARIOS?.normalizarEvento(raw) || raw) : raw;
       current[key]=val;
@@ -209,13 +253,17 @@
       if (pdfInput.files?.[0] !== file) return;
       textExtracted = result.all;
       localFound = guess(result.all, result.pages);
-      const foundCount = show(localFound);
-      // O clique em "Pesquisar no PDF" inicia a busca completa. A etapa externa
-      // só é usada quando a identificação local encontrou 0, 1, 2 ou 3 campos.
-      if (aiReady && foundCount < lowConfidenceLimit && textExtracted.length >= 120) {
+      show(localFound);
+      // Para qualquer PDF com texto extraível: leitura local primeiro,
+      // depois revisão dos campos encontrados e sugestão dos ausentes pela IA.
+      // A etapa de IA nunca preenche o formulário sem conferência humana.
+      if (aiReady && textExtracted.length >= 120) {
+        apply.disabled = true;
+        setStatus("Leitura inicial concluída. Conferindo os dados e buscando sugestões adicionais…");
         solicitarComplementoIA();
         return;
       }
+      setStatus("Sugestões encontradas no PDF. Revise e selecione os dados que deseja preencher.");
     } catch (error) {
       setStatus(error.message || "Não foi possível ler o arquivo. Preencha manualmente.");
     } finally {
@@ -254,6 +302,7 @@
     pending.iframe.remove();
     pending = null;
     localBtn.disabled = false;
+    apply.disabled = false;
   }
 
   window.addEventListener("message", event => {
@@ -268,16 +317,16 @@
     if (!msg || msg.tipo !== "CETEP_IA_METADADOS" || msg.requisicaoId !== pending.id) return;
     limparPendente();
     if (msg.ok && msg.sugestoes && typeof msg.sugestoes === "object") {
-      // A IA complementa dados não identificados. Correções de curso/evento
-      // serão normalizadas ao renderizar as sugestões.
+      // A IA REVISA também o que a leitura local encontrou; quando há uma
+      // sugestão confirmada, ela prevalece. Quando faltar evidência para um campo,
+      // a pista local permanece apenas como sugestão a ser conferida pela pessoa.
       const merged = {...localFound};
       for (const key of Object.keys(fields)) {
-        const suggestion = clean(msg.sugestoes[key]);
-        // Preserva o que já foi extraído; a IA completa somente os campos ausentes.
-        if (suggestion && !clean(merged[key])) merged[key] = suggestion;
+        const suggestion = padronizarCampo(key,msg.sugestoes[key]);
+        if (suggestion) merged[key] = suggestion;
       }
       show(merged);
-      setStatus("A identificação foi concluída. Revise e selecione os dados que deseja preencher.");
+      setStatus("Revisão concluída. Confira título, autores e demais informações antes de aplicar.");
       if (msg.consumo) {
         // Informações técnicas ficam no log para conferência, nunca na tela pública.
         console.info("CETEP-RM: identificação complementar concluída", {
@@ -305,14 +354,21 @@
       post.method = "POST";
       post.action = backendUrl;
       post.target = iframe.name;
+      // Pistas locais são usadas para checagem, nunca como fonte de verdade.
+      // O nome/e-mail/vínculo de quem submete não entram neste objeto.
+      const pistas = Object.fromEntries(Object.entries(localFound)
+        .filter(([key]) => Object.hasOwn(fields,key))
+        .map(([key,value]) => [key,clean(value).slice(0,key==="resumo"?220:180)]));
       const parameters = {
         acao:"analisarIA",
         requisicaoId:id,
         analiseAutomatica:"sim",
-        // Limite de tamanho. PDFs e e-mails/CPFs não são enviados ao modelo.
+        pistasLocais:JSON.stringify(pistas),
+        // Somente texto extraível; PDF completo, e-mail e CPF não seguem à IA.
         textoPDF:textExtracted.slice(0,aiMaxChars)
           .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,"[e-mail omitido]")
           .replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g,"[documento omitido]")
+          .replace(/\b\d{11}\b/g,"[documento omitido]")
       };
       for (const [name,value] of Object.entries(parameters)) {
         const h = document.createElement("input");
