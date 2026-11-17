@@ -676,14 +676,14 @@
     },
     {
       "id": "CETEPRM-BANNER-2025-0027",
-      "titulo": "Cosméticos sustentáveis",
+      "titulo": "Esfoliante natural",
       "categoria": "Banner de pesquisa",
       "evento": "FECITESC",
-      "curso": "Química",
+      "curso": "Meio Ambiente",
       "ano": "2025",
-      "resumo": "O desenvolvimento das formulações de hidratante e esfoliante à base de ingredientes naturais demonstrou que é possível unir inovação científica, sustentabilidade e acessibilidade. O projeto evidencia o potencial dos cosméticos sustentáveis como alternativa viável aos produtos convencionais, reduzindo impactos ambientais e incentivando práticas de consumo consciente. Além disso, valoriza o aproveitamento de resíduos orgânicos e insumos locais, contribuindo",
-      "palavrasChave": "cosméticos sustentáveis",
-      "pdf": "https://drive.google.com/file/d/1FUFQflOvEaOQdBxPU3nz1k4ltpeGkLUl/view?usp=drivesdk"
+      "resumo": "O trabalho apresenta o desenvolvimento de um esfoliante natural à base de ingredientes acessíveis, como açúcar, aveia e café, visando uma alternativa sustentável aos produtos industrializados. A metodologia envolveu a seleção dos ingredientes e testes de formulações para avaliar textura e eficiência. O projeto destaca o potencial dos esfoliantes naturais como opções de baixo custo, associadas ao autocuidado e à redução de resíduos plásticos.",
+      "palavrasChave": "Esfoliante natural; Sustentabilidade; Cosméticos naturais; Autocuidado; Biodegradabilidade.",
+      "pdf": "https://drive.google.com/file/d/1fXwGw6IrQgYh8NntkorYiXQdKJ6T0Su3/view?usp=drivesdk"
     },
     {
       "id": "CETEPRM-BANNER-2025-0028",
@@ -983,6 +983,127 @@
       "pdf": "https://drive.google.com/file/d/14I7i7BMbJ5tOFMOFKXt5BgqlDte9eFnT/view?usp=drivesdk"
     },
     {
+      "id": "CETEPRM-BANNER-2025-0055",
+      "titulo": "Luz, câmera... reação: a química por trás da fotografia",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "A fotografia analógica é uma das invenções mais impactantes da história, e sua base é totalmente química. Desde os primeiros registros com câmeras escuras até os filmes modernos, a luz sempre interage com substâncias fotossensíveis compostos capazes de reagir à luz para formar imagens. A química é essencial nesse processo, conectando arte, ciência e tecnologia em um só clique. Foi possível demonstrar, na prática,",
+      "palavrasChave": "fotografia; fotoquímica; reações químicas",
+      "pdf": "https://drive.google.com/file/d/1D4I-ZLkOXv6Aq_QNnXYFf40pCwXO7PQt/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0056",
+      "titulo": "Reaproveitamento de energia em uma residência",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Eletrotécnica",
+      "ano": "2025",
+      "resumo": "O alto consumo de energia no Brasil, especialmente em períodos como verão e inverno, exige medidas sustentáveis e eficientes. Soluções como lâmpadas por iluminação LED, o uso de energia solar e a captação e reuso de água ajudam a reduzir custos. A pesquisa revelou soluções como energia solar, baterias, eficiência energética, automação e reaproveitamento de calor, que reduzem custos, aumentam conforto e",
+      "palavrasChave": "eficiência energética; sustentabilidade; residências",
+      "pdf": "https://drive.google.com/file/d/1MLG9NEASThAmcQDhngFccguZ18iRxYqU/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0057",
+      "titulo": "Fitorremediação para retirada de substâncias e resíduos deixados pelo polo petroquímico",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "A fitorremediação é uma técnica que visa pela descontaminação do solo e da água, utilizando se plantas como agentes purificadores. Após a absorção do poluente do solo, a planta pode armazená-lo para um tratamento futuro, quando necessário, ou até mesmo metabolizá lo, podendo convertê-lo em substâncias menos nocivas ou até mesmo inofensivas. A mamona (Ricinus communis) é uma dessas plantas, reconhecida por sua",
+      "palavrasChave": "fitorremediação; meio ambiente; resíduos industriais",
+      "pdf": "https://drive.google.com/file/d/1Zns2Ut5PybA1P8avsBg2hljXRWNK2e7m/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0058",
+      "titulo": "Biofertilizantes",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "O presente estudo teve como objetivo desenvolver e avaliar a produção de biofertilizantes a partir de resíduos orgânicos, configurando-se como uma alternativa viável ao uso de fertilizantes químicos convencionais. A proposta demonstra potencial não apenas para a mitigação de impactos ambientais, mas também para a geração de oportunidades de produção doméstica e aplicação prática, podendo inclusive constituir uma fonte complementar de renda para pequenos e",
+      "palavrasChave": "biofertilizantes",
+      "pdf": "https://drive.google.com/file/d/1DFRS_blIusez9m8agWv3VGXnUpZyP4IO/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0059",
+      "titulo": "Desenvolvimento de máquina de extração a frio de frutas cítricas e a formação de biofertilizante através do óleo",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "Este trabalho apresenta uma máquina automatizada de extração a frio de óleos essenciais a partir de resíduos de frutas cítricas, visando a produção de biofertilizantes orgânicos. Óleos como o da casca de laranja são reconhecidos na agricultura por suas propriedades nutritivas e sustentáveis (Rovensa Next, 2025). Inspirada em processos industriais de extração a frio, a proposta une tecnologia e inovação para aproveitar resíduos cítricos e promover práticas agrícolas mais sustentáveis (Tecnologia Scott, 2024). Os resultados obtidos",
+      "palavrasChave": "3 anos a e e (química e eletrotécnica) - desenvolvimento de máquina de extração a frio de frutas cítricas e a",
+      "pdf": "https://drive.google.com/file/d/13yA1RULO1clmprmG_-ya7gXBLD_onExf/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0060",
+      "titulo": "Camaçari  cidade sustentável do futuro",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Meio Ambiente",
+      "ano": "2025",
+      "resumo": "A cidade sustentável do futuro em Camaçari busca unir tecnologia, meio ambiente e qualidade de vida. O objetivo é equilibrar crescimento urbano com preservação ambiental, garantindo energia limpa, mobilidade eficiente e espaços verdes para as próximas gerações. Planejamento Urbano: áreas verdes e infraestrutura organizada. Energia Sustentável: uso de fontes solar e eólica. Resíduos: coleta seletiva e reciclagem. Mobilidade: transporte público, ciclovias e caminhadas. Educação Ambiental: programas de conscientização comunitária. Com",
+      "palavrasChave": "camaçari  cidade sustentável do futuro",
+      "pdf": "https://drive.google.com/file/d/1NceI84eh3r_VEy3XQz1cgoVrZq7EXOP4/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0061",
+      "titulo": "Desenvolvimento do body splash a partir da extração de óleos naturais de frutas",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "O body splash é uma fragrância leve em spray, menos concentrada que o perfume, ideal para uso diário por proporcionar frescor e perfumação suave à pele. Além de ser acessível, pode conter ativos hidratantes. Neste trabalho, foi desenvolvido um body splash com maracujá, tangerina e baunilha, buscando unir frescor, dulçor e bem-estar. O produto apresentou fragrância cítrica e adocicada, com notas equilibradas entre maracujá, tangerina e baunilha. Foi bem aceito na pele, com sensação refrescante e duração moderada (2–3 horas),",
+      "palavrasChave": "desenvolvimento do body splash a partir da extração de óleos naturais de frutas",
+      "pdf": "https://drive.google.com/file/d/1mPJWKycrrllxXQKn8lo3vLe8jc1ZR97T/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0062",
+      "titulo": "Comparação espectrofotométrica da concentração de corantes em refrigerantes de laranja com monitoramento remoto via ESP32",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "O corante artificial Amarelo Crepúsculo (INS 110) é amplamente utilizado em refrigerantes de laranja para padronização visual, mas seu consumo excessivo pode provocar efeitos adversos à saúde e é restrito ou proibido em alguns países (BRASIL, 2008; 2010). A espectrofotometria é uma técnica eficaz para a quantificação precisa desse corante, permitindo análises confiáveis e detalhadas (Vidotti & Rollemberg, 2006). Além disso, a integração de tecnologias de monitoramento remoto, como o microcontrolador ESP32, possibilita modernizar o",
+      "palavrasChave": "comparação espectrofotométrica da concentração de corantes em refrigerantes de laranja com monitoramento remot",
+      "pdf": "https://drive.google.com/file/d/1xpl6hWrMMw5npdi_kNR6fDQ61jyXiAD2/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0063",
+      "titulo": "Extração de hidrolatos de hortelã e erva-doce e produção de difusores ecológicos",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "O presente trabalho apresenta o desenvolvimento de difusores ecológicos a partir dos óleos essenciais de hortelã (Mentha sp.) e erva-doce (Pimpinella anisum), como alternativa natural e sustentável aos aromatizadores artificiais. Os hidrolatos obtidos concentram compostos aromáticos solúveis em água, reconhecidos por aplicações em bem-estar e aromaterapia (Silva, 2021). A hortelã apresenta efeito refrescante e estimulante, enquanto a erva-doce se destaca por suas propriedades calmantes e relaxantes (Oliveira & Santos, 2020).A",
+      "palavrasChave": "extração de hidrolatos de hortelã e erva-doce e produção de difusores ecológicos",
+      "pdf": "https://drive.google.com/file/d/104PEdY9KaQO2qgN-Vewc9IFg1Zw2nEgw/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0064",
+      "titulo": "Desenvolvimento de pigmento inteligente para detecção de ferro nas águas do rio Camaçari por espectrometria colorimétrica",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "O excesso de ferro na água compromete sua qualidade, prejudica ecossistemas, causa riscos à saúde humana e aumenta os custos de tratamento. Suas origens podem ser naturais ou decorrentes de atividades humanas, como mineração e uso de fertilizantes. Frente às limitações de métodos tradicionais de análise, este estudo propõe o desenvolvimento de uma tinta inteligente capaz de mudar de cor na presença do metal, oferecendo uma alternativa prática, acessível e eficaz para o monitoramento ambiental e a preservação dos recursos hídricos. A",
+      "palavrasChave": "desenvolvimento de pigmento inteligente para detecção de ferro nas águas do rio camaçari por espectrometria co",
+      "pdf": "https://drive.google.com/file/d/1hotY1kt4hOT88QcyPjevQNgOPeHm7UHZ/view?usp=drivesdk"
+    },
+    {
+      "id": "CETEPRM-BANNER-2025-0065",
+      "titulo": "Desenvolvimento e validação de um creme fotoprotetor à base de acerola por testes fotossensíveis",
+      "categoria": "Banner de pesquisa",
+      "evento": "FECITESC",
+      "curso": "Química",
+      "ano": "2025",
+      "resumo": "A radiação UV, intensificada pela destruição da camada de ozônio, provoca queimaduras, câncer de pele e envelhecimento precoce, agravando-se com as mudanças climáticas que ampliam ondas de calor e riscos à saúde (Grandi; D’Ovidio, 2020; IPCC, 2021; 2022; Perkins et al., 2012). Entre os efeitos, destaca-se o fotoenvelhecimento, marcado por rugas, despigmentação e perda de elasticidade (Diniz et al., 2024). Nesse contexto, a combinação desses compostos pode resultar em cremes fotoprotetores",
+      "palavrasChave": "desenvolvimento e validação de um creme fotoprotetor à base de acerola por testes fotossensíveis",
+      "pdf": "https://drive.google.com/file/d/1cHJS8-PvSA_ylKWHEahwJaQngKY_ITcS/view?usp=drivesdk"
+    },
+    {
       "id": "CETEPRM-BANNER-2026-0001",
       "titulo": "Paracetamol: dos neurotransmissores à contaminação dos recursos hídricos",
       "categoria": "Banner de pesquisa",
@@ -1154,7 +1275,7 @@
       "evento": "FICA- Feira Internacional de Ciências e Aprendizagens",
       "curso": "Química",
       "ano": "2026",
-      "resumo": "A geração de resíduos orgânicos provenientes da merenda escolar representa um desafio ambiental, especialmente quando não são adotadas práticas adequadas de destinação e aproveitamento. Entretanto, esses materiais apresentam potencial para utilização em processos biológicos de conversão de matéria orgânica em energia renovável. Nesse contexto, o presente projeto teve como objetivo investigar a produção de biogás a partir de resíduos orgânicos gerados no ambiente escolar, avaliando a influência de diferentes tipos de substratos e das condições de temperatura sobre o processo de digestão anaeróbica. A metodologia experimental envolveu a seleção, preparação e trituração dos resíduos orgânicos, seguida de sua mistura com água e acondicionamento em biodigestores anaeróbicos devidamente vedados, conectados a balões para coleta do gás produzido. Durante o experimento, foram acompanhados parâmetros como o volume de biogás gerado, o tempo de fermentação e a temperatura dos sistemas. A investigação considerou a influência das condições experimentais sobre a atividade dos microrganismos envolvidos na digestão anaeróbica, especialmente aqueles responsáveis pela produção de metano. A pesquisa busca identificar as combinações de substratos e temperaturas que favorecem a produção de biogás, contribuindo para a compreensão dos fatores que interferem na eficiência do processo. Além disso, pretende demonstrar o potencial de aproveitamento dos resíduos orgânicos escolares como matéria-prima para geração de energia renovável, incentivando práticas de gestão sustentável dos resíduos e promovendo a integração entre conhecimentos científicos e questões ambientais presentes no cotidiano escolar.",
+      "resumo": "A geração de resíduos orgânicos provenientes da merenda escolar representa um desafio ambiental, especialmente quando não são adotadas práticas adequadas de destinação e aproveitamento. Entretanto, esses materiais apresentam potencial para utilização em processos biológicos de conversão de matéria orgânica em energia renovável. Nesse contexto, o presente projeto teve como objetivo investigar a produção de biogás a partir de resíduos orgânicos gerados no ambiente escolar, avaliando a influência de diferentes tipos de substratos e das condições de temperatura sobre o processo de digestão anaeróbica.A metodologia experimental envolveu a seleção, preparação e trituração dos resíduos orgânicos, seguida de sua mistura com água e acondicionamento em biodigestores anaeróbicos devidamente vedados, conectados a balões para coleta do gás produzido. Durante o experimento, foram acompanhados parâmetros como o volume de biogás gerado, o tempo de fermentação e a temperatura dos sistemas. A investigação considerou a influência das condições experimentais sobre a atividade dos microrganismos envolvidos na digestão anaeróbica, especialmente aqueles responsáveis pela produção de metano. A pesquisa busca identificar as combinações de substratos e temperaturas que favorecem a produção de biogás, contribuindo para a compreensão dos fatores que interferem na eficiência do processo. Além disso, pretende demonstrar o potencial de aproveitamento dos resíduos orgânicos escolares como matéria-prima para geração de energia renovável, incentivando práticas de gestão sustentável dos resíduos e promovendo a integração entre conhecimentos científicos e questões ambientais presentes no cotidiano escolar.",
       "palavrasChave": "Resíduos orgânicos; Biogás; Digestão anaeróbica; Biodigestores; Energia renovável; Sustentabilidade ambiental.",
       "pdf": "https://drive.google.com/file/d/1Y2R4Vr3H4YKh5yDfKNQR2Qi6Kl0F2211/view?usp=drivesdk"
     },
